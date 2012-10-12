@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpAssetLibraryManager", "DumpAssetLibraryManager\DumpAssetLibraryManager.csproj", "{DC19F0DB-4B68-46B0-8DBD-4C0CF667FB10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpBalance", "DumpBalance\DumpBalance.csproj", "{BCD63D03-F737-4C8A-8503-391D32ADD9A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,16 @@ Global
 		{DC19F0DB-4B68-46B0-8DBD-4C0CF667FB10}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DC19F0DB-4B68-46B0-8DBD-4C0CF667FB10}.Release|x86.ActiveCfg = Release|x86
 		{DC19F0DB-4B68-46B0-8DBD-4C0CF667FB10}.Release|x86.Build.0 = Release|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Debug|x86.ActiveCfg = Debug|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Debug|x86.Build.0 = Debug|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Release|Any CPU.ActiveCfg = Release|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Release|Mixed Platforms.Build.0 = Release|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Release|x86.ActiveCfg = Release|x86
+		{BCD63D03-F737-4C8A-8503-391D32ADD9A6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
