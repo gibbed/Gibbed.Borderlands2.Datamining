@@ -26,8 +26,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Unreflect.Core;
-using Unreflect.Runtime;
+using Gibbed.Unreflect.Core;
+using Gibbed.Unreflect.Runtime;
 
 namespace DumpAssetLibraryManager
 {

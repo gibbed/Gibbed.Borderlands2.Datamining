@@ -23,8 +23,8 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using Unreflect.Core;
-using Unreflect.Runtime;
+using Gibbed.Unreflect.Core;
+using Gibbed.Unreflect.Runtime;
 
 namespace Test
 {
