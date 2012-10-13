@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -92,6 +93,32 @@ namespace DumpBalance
                         if (inventoryDefinition != null)
                         {
                             output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
+                        }
+
+                        var manufacturers = balanceDefinition.Manufacturers;
+                        if (manufacturers != null &&
+                            manufacturers.Length > 0)
+                        {
+                            if (manufacturers.Length > 1)
+                            {
+                                output.WriteLine("    manufacturers:");
+                                output.WriteLine("    [");
+
+                                foreach (
+                                    var manufacturer in
+                                        ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
+                                            OrderBy(imbd => imbd.Manufacturer.GetPath()))
+                                {
+                                    output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
+                                }
+
+                                output.WriteLine("    ],");
+                            }
+                            else
+                            {
+                                output.WriteLine("    manufacturers: [\"{0}\"],",
+                                                 manufacturers[0].Manufacturer.GetPath());
+                            }
                         }
 
                         if (balanceDefinition.PartListCollection != null)
@@ -195,6 +222,32 @@ namespace DumpBalance
                             if (inventoryDefinition != null)
                             {
                                 output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
+                            }
+                        }
+
+                        var manufacturers = balanceDefinition.Manufacturers;
+                        if (manufacturers != null &&
+                            manufacturers.Length > 0)
+                        {
+                            if (manufacturers.Length > 1)
+                            {
+                                output.WriteLine("    manufacturers:");
+                                output.WriteLine("    [");
+
+                                foreach (
+                                    var manufacturer in
+                                        ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
+                                            OrderBy(imbd => imbd.Manufacturer.GetPath()))
+                                {
+                                    output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
+                                }
+
+                                output.WriteLine("    ],");
+                            }
+                            else
+                            {
+                                output.WriteLine("    manufacturers: [\"{0}\"],",
+                                                 manufacturers[0].Manufacturer.GetPath());
                             }
                         }
 
