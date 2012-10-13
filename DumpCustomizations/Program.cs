@@ -1,0 +1,199 @@
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Gibbed.Unreflect.Core;
+using Gibbed.Unreflect.Runtime;
+
+namespace DumpCustomizations
+{
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            var config = Configuration.Load("Borderlands 2.json");
+
+            var processes = Process.GetProcessesByName("borderlands2");
+            if (processes.Length == 0)
+            {
+                return;
+            }
+
+            var process = processes.Last();
+            config.AdjustAddresses(process.MainModule);
+
+            using (var runtime = new RuntimeProcess())
+            {
+                if (runtime.OpenProcess(process) == false)
+                {
+                    return;
+                }
+
+                runtime.SuspendThreads();
+
+                var engine = new Engine(config, runtime);
+
+                var customizationDefinitionClass = engine.GetClass("WillowGame.CustomizationDefinition");
+                if (customizationDefinitionClass == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                using (var output = new StreamWriter("Customization.json", false, Encoding.Unicode))
+                {
+                    output.WriteLine("{");
+
+                    var customizationDefinitions = engine.Objects.Where(o => o.IsA(customizationDefinitionClass) &&
+                                                                             o.GetName().StartsWith("Default__") ==
+                                                                             false)
+                        .OrderBy(o => o.GetPath());
+                    foreach (dynamic customizationDefinition in customizationDefinitions)
+                    {
+                        output.WriteLine("  \"{0}\":", customizationDefinition.GetPath());
+                        output.WriteLine("  {");
+
+                        string customizationName = customizationDefinition.CustomizationName;
+                        if (customizationName == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        output.WriteLine("    name: \"{0}\",", customizationName);
+
+                        UnrealClass customizationType = customizationDefinition.CustomizationType;
+                        if (customizationType == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        if (_TypeMapping.ContainsKey(customizationType.Path) == false)
+                        {
+                            throw new NotSupportedException();
+                        }
+
+                        output.WriteLine("    type: \"{0}\",", _TypeMapping[customizationType.Path]);
+
+                        var usageFlags = ((IEnumerable<UnrealClass>)customizationDefinition.UsageFlags).ToArray();
+
+                        if (usageFlags.Length > 0)
+                        {
+                            if (usageFlags.Length > 1)
+                            {
+                                output.WriteLine("    usage:");
+                                output.WriteLine("    [");
+                            }
+                            else
+                            {
+                                output.Write("    usage: [");
+                            }
+
+                            foreach (var usageFlag in usageFlags.OrderBy(uf => uf.Path))
+                            {
+                                if (usageFlags.Length > 1)
+                                {
+                                    output.WriteLine("      ");
+                                }
+
+                                if (_UsageFlagMapping.ContainsKey(usageFlag.Path) == false)
+                                {
+                                    throw new NotSupportedException();
+                                }
+
+                                output.Write("\"{0}\"", _UsageFlagMapping[usageFlag.Path]);
+
+                                if (usageFlags.Length > 1)
+                                {
+                                    output.WriteLine(",");
+                                }
+                            }
+
+                            if (usageFlags.Length > 1)
+                            {
+                                output.WriteLine("    ],");
+                            }
+                            else
+                            {
+                                output.WriteLine("],");
+                            }
+                        }
+
+                        var otherUsageFlags = customizationDefinition.OtherUsageFlags;
+                        if (otherUsageFlags.Length > 0)
+                        {
+                            throw new NotSupportedException();
+                        }
+
+                        output.WriteLine("  },");
+                    }
+
+                    output.WriteLine("}");
+                }
+
+                runtime.ResumeThreads();
+                runtime.CloseProcess();
+            }
+        }
+
+        private static readonly Dictionary<string, string> _TypeMapping = new Dictionary<string, string>()
+        {
+            {
+                "WillowGame.CustomizationType_Head", "Head"
+                },
+            {
+                "WillowGame.CustomizationType_Skin", "Skin"
+                },
+        };
+
+        private static readonly Dictionary<string, string> _UsageFlagMapping = new Dictionary<string, string>()
+        {
+            {
+                "WillowGame.CustomizationUsage_Assassin", "Assassin"
+                },
+            {
+                "WillowGame.CustomizationUsage_Mercenary", "Mercenary"
+                },
+            {
+                "WillowGame.CustomizationUsage_Soldier", "Soldier"
+                },
+            {
+                "WillowGame.CustomizationUsage_Siren", "Siren"
+                },
+            {
+                "WillowGame.CustomizationUsage_ExtraPlayerA", "Mechromancer"
+                },
+            {
+                "WillowGame.CustomizationUsage_Runner", "Runner"
+                },
+            {
+                "WillowGame.CustomizationUsage_BanditTech", "BanditTech"
+                },
+            {
+                "WillowGame.CustomizationUsage_Hovercraft", "Hovercraft"
+                },
+        };
+    }
+}
