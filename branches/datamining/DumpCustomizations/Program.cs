@@ -48,9 +48,10 @@ namespace DumpCustomizations
             {
                 output.WriteLine("{");
 
-                var customizationDefinitions = engine.Objects.Where(o => o.IsA(customizationDefinitionClass) &&
-                                                                         o.GetName().StartsWith("Default__") ==
-                                                                         false)
+                var customizationDefinitions = engine.Objects
+                    .Where(o => o.IsA(customizationDefinitionClass) &&
+                                o.GetName().StartsWith("Default__") ==
+                                false)
                     .OrderBy(o => o.GetPath());
                 foreach (dynamic customizationDefinition in customizationDefinitions)
                 {
