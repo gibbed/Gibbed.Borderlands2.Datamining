@@ -68,6 +68,7 @@ namespace WillowDatamining
             }
 
             var config = Configuration.Deserialize(configText);
+            config.AdjustAddresses(process.MainModule);
 
             using (var runtime = new RuntimeProcess())
             {
