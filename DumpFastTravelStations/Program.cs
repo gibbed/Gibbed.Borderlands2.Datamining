@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
+using Newtonsoft.Json;
 
 namespace DumpFastTravelStations
 {
@@ -40,8 +41,13 @@ namespace DumpFastTravelStations
             var fastTravelStationDefinitionClass = engine.GetClass("WillowGame.FastTravelStationDefinition");
 
             using (var output = new StreamWriter("Fast Travel Stations.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
             {
-                output.WriteLine("{");
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
 
                 var fastTravelStationDefinitions = engine.Objects
                     .Where(o => o.IsA(fastTravelStationDefinitionClass) &&
@@ -50,31 +56,34 @@ namespace DumpFastTravelStations
                     .OrderBy(o => o.GetPath());
                 foreach (dynamic fastTravelStationDefinition in fastTravelStationDefinitions)
                 {
-                    output.WriteLine("  \"{0}\":", fastTravelStationDefinition.GetPath());
-                    output.WriteLine("  {");
+                    writer.WritePropertyName(fastTravelStationDefinition.GetPath());
+                    writer.WriteStartObject();
 
                     string stationLevelName = fastTravelStationDefinition.StationLevelName;
                     if (string.IsNullOrEmpty(stationLevelName) == false)
                     {
-                        output.WriteLine("    level_name: \"{0}\",", stationLevelName);
+                        writer.WritePropertyName("level_name");
+                        writer.WriteValue(stationLevelName);
                     }
 
                     var dlcExpansion = fastTravelStationDefinition.DlcExpansion;
                     if (dlcExpansion != null)
                     {
-                        output.WriteLine("    dlc_expansion: \"{0}\",", dlcExpansion.GetPath());
+                        writer.WritePropertyName("dlc_expansion");
+                        writer.WriteValue(dlcExpansion.GetPath());
                     }
 
                     if (fastTravelStationDefinition.PreviousStation != null)
                     {
-                        output.WriteLine("    previous_station: \"{0}\",",
-                                         fastTravelStationDefinition.PreviousStation.GetPath());
+                        writer.WritePropertyName("previous_station");
+                        writer.WriteValue(fastTravelStationDefinition.PreviousStation.GetPath());
                     }
 
                     string stationDisplayName = fastTravelStationDefinition.StationDisplayName;
                     if (string.IsNullOrEmpty(stationDisplayName) == false)
                     {
-                        output.WriteLine("    display_name: \"{0}\",", stationDisplayName);
+                        writer.WritePropertyName("display_name");
+                        writer.WriteValue(stationDisplayName);
                     }
 
                     var missionDependencies = ((IEnumerable<dynamic>)fastTravelStationDefinition.MissionDependencies)
@@ -83,78 +92,81 @@ namespace DumpFastTravelStations
                         .ToArray();
                     if (missionDependencies.Length > 0)
                     {
-                        output.WriteLine("    mission_dependencies:");
-                        output.WriteLine("    [");
+                        writer.WritePropertyName("mission_dependencies");
+                        writer.WriteStartArray();
 
                         foreach (var missionDependency in missionDependencies)
                         {
-                            output.WriteLine("      {");
+                            writer.WriteStartObject();
 
-                            if (missionDependency.MissionDefinition != null)
-                            {
-                                output.WriteLine("        mission_definition: \"{0}\",",
-                                                 missionDependency.MissionDefinition.GetPath());
-                            }
+                            writer.WritePropertyName("mission_definition");
+                            writer.WriteValue(missionDependency.MissionDefinition.GetPath());
 
-                            output.WriteLine("        mission_status: \"{0}\",",
-                                             (MissionStatus)missionDependency.MissionStatus);
+                            writer.WritePropertyName("mission_status");
+                            writer.WriteValue(((MissionStatus)missionDependency.MissionStatus).ToString());
+
                             if ((bool)missionDependency.bIsObjectiveSpecific == true)
                             {
-                                output.WriteLine("        is_objective_specific: {0},",
-                                                 missionDependency.bIsObjectiveSpecific.ToString().ToLowerInvariant());
+                                writer.WritePropertyName("is_objective_specific");
+                                writer.WriteValue(true);
 
                                 if (missionDependency.MissionObjective != null)
                                 {
-                                    output.WriteLine("        objective_definition: \"{0}\",",
-                                                     missionDependency.MissionObjective.GetPath());
+                                    writer.WritePropertyName("objective_definition");
+                                    writer.WriteValue(missionDependency.MissionObjective.GetPath());
                                 }
 
-                                output.WriteLine("        objective_status: \"{0}\",",
-                                                 (ObjectiveDependencyStatus)missionDependency.ObjectiveStatus);
+                                writer.WritePropertyName("objective_status");
+                                writer.WriteValue(
+                                    ((ObjectiveDependencyStatus)missionDependency.ObjectiveStatus).ToString());
                             }
 
-                            output.WriteLine("      },");
+                            writer.WriteEndObject();
                         }
 
-                        output.WriteLine("    ],");
+                        writer.WriteEndArray();
                     }
 
-                    output.WriteLine("    initially_active: {0},",
-                                     fastTravelStationDefinition.bInitiallyActive.ToString().ToLowerInvariant());
-                    output.WriteLine("    send_only: {0},",
-                                     fastTravelStationDefinition.bSendOnly.ToString().ToLowerInvariant());
+                    writer.WritePropertyName("initially_active");
+                    writer.WriteValue((bool)fastTravelStationDefinition.bInitiallyActive);
+
+                    writer.WritePropertyName("send_only");
+                    writer.WriteValue((bool)fastTravelStationDefinition.bSendOnly);
 
                     string stationDescription = fastTravelStationDefinition.StationDescription;
                     if (string.IsNullOrEmpty(stationDescription) == false &&
                         stationDescription != "No Description" &&
                         stationDescription != stationDisplayName)
                     {
-                        output.WriteLine("    description: \"{0}\",", stationDescription);
+                        writer.WritePropertyName("description");
+                        writer.WriteValue(stationDescription);
                     }
 
                     string stationSign = fastTravelStationDefinition.StationSign;
                     if (string.IsNullOrEmpty(stationSign) == false &&
                         stationSign != stationDisplayName)
                     {
-                        output.WriteLine("    sign: \"{0}\",", stationSign);
+                        writer.WritePropertyName("sign");
+                        writer.WriteValue(stationSign);
                     }
 
                     if (fastTravelStationDefinition.InaccessibleObjective != null)
                     {
-                        output.WriteLine("    inaccessible_objective: \"{0}\",",
-                                         fastTravelStationDefinition.InaccessibleObjective.GetPath());
+                        writer.WritePropertyName("inaccessible_objective");
+                        writer.WriteValue(fastTravelStationDefinition.InaccessibleObjective.GetPath());
                     }
 
                     if (fastTravelStationDefinition.AccessibleObjective != null)
                     {
-                        output.WriteLine("    accessible_objective: \"{0}\",",
-                                         fastTravelStationDefinition.AccessibleObjective.GetPath());
+                        writer.WritePropertyName("accessible_objective");
+                        writer.WriteValue(fastTravelStationDefinition.AccessibleObjective.GetPath());
                     }
 
-                    output.WriteLine("  },");
+                    writer.WriteEndObject();
                 }
 
-                output.WriteLine("}");
+                writer.WriteEndObject();
+                writer.Flush();
             }
         }
     }
