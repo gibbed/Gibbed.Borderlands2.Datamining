@@ -22,12 +22,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
-using Gibbed.Unreflect.Runtime;
 
 namespace DumpCustomizations
 {
@@ -35,126 +33,105 @@ namespace DumpCustomizations
     {
         private static void Main(string[] args)
         {
-            var config = Configuration.Load("Borderlands 2.json");
+            new WillowDatamining.Dataminer().Run(args, Go);
+        }
 
-            var processes = Process.GetProcessesByName("borderlands2");
-            if (processes.Length == 0)
+        private static void Go(Engine engine)
+        {
+            var customizationDefinitionClass = engine.GetClass("WillowGame.CustomizationDefinition");
+            if (customizationDefinitionClass == null)
             {
-                return;
+                throw new InvalidOperationException();
             }
 
-            var process = processes.Last();
-            config.AdjustAddresses(process.MainModule);
-
-            using (var runtime = new RuntimeProcess())
+            using (var output = new StreamWriter("Customization.json", false, Encoding.Unicode))
             {
-                if (runtime.OpenProcess(process) == false)
+                output.WriteLine("{");
+
+                var customizationDefinitions = engine.Objects.Where(o => o.IsA(customizationDefinitionClass) &&
+                                                                         o.GetName().StartsWith("Default__") ==
+                                                                         false)
+                    .OrderBy(o => o.GetPath());
+                foreach (dynamic customizationDefinition in customizationDefinitions)
                 {
-                    return;
-                }
+                    output.WriteLine("  \"{0}\":", customizationDefinition.GetPath());
+                    output.WriteLine("  {");
 
-                runtime.SuspendThreads();
-
-                var engine = new Engine(config, runtime);
-
-                var customizationDefinitionClass = engine.GetClass("WillowGame.CustomizationDefinition");
-                if (customizationDefinitionClass == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                using (var output = new StreamWriter("Customization.json", false, Encoding.Unicode))
-                {
-                    output.WriteLine("{");
-
-                    var customizationDefinitions = engine.Objects.Where(o => o.IsA(customizationDefinitionClass) &&
-                                                                             o.GetName().StartsWith("Default__") ==
-                                                                             false)
-                        .OrderBy(o => o.GetPath());
-                    foreach (dynamic customizationDefinition in customizationDefinitions)
+                    string customizationName = customizationDefinition.CustomizationName;
+                    if (customizationName == null)
                     {
-                        output.WriteLine("  \"{0}\":", customizationDefinition.GetPath());
-                        output.WriteLine("  {");
-
-                        string customizationName = customizationDefinition.CustomizationName;
-                        if (customizationName == null)
-                        {
-                            throw new InvalidOperationException();
-                        }
-
-                        output.WriteLine("    name: \"{0}\",", customizationName);
-
-                        UnrealClass customizationType = customizationDefinition.CustomizationType;
-                        if (customizationType == null)
-                        {
-                            throw new InvalidOperationException();
-                        }
-
-                        if (_TypeMapping.ContainsKey(customizationType.Path) == false)
-                        {
-                            throw new NotSupportedException();
-                        }
-
-                        output.WriteLine("    type: \"{0}\",", _TypeMapping[customizationType.Path]);
-
-                        var usageFlags = ((IEnumerable<UnrealClass>)customizationDefinition.UsageFlags).ToArray();
-
-                        if (usageFlags.Length > 0)
-                        {
-                            if (usageFlags.Length > 1)
-                            {
-                                output.WriteLine("    usage:");
-                                output.WriteLine("    [");
-                            }
-                            else
-                            {
-                                output.Write("    usage: [");
-                            }
-
-                            foreach (var usageFlag in usageFlags.OrderBy(uf => uf.Path))
-                            {
-                                if (usageFlags.Length > 1)
-                                {
-                                    output.WriteLine("      ");
-                                }
-
-                                if (_UsageFlagMapping.ContainsKey(usageFlag.Path) == false)
-                                {
-                                    throw new NotSupportedException();
-                                }
-
-                                output.Write("\"{0}\"", _UsageFlagMapping[usageFlag.Path]);
-
-                                if (usageFlags.Length > 1)
-                                {
-                                    output.WriteLine(",");
-                                }
-                            }
-
-                            if (usageFlags.Length > 1)
-                            {
-                                output.WriteLine("    ],");
-                            }
-                            else
-                            {
-                                output.WriteLine("],");
-                            }
-                        }
-
-                        var otherUsageFlags = customizationDefinition.OtherUsageFlags;
-                        if (otherUsageFlags.Length > 0)
-                        {
-                            throw new NotSupportedException();
-                        }
-
-                        output.WriteLine("  },");
+                        throw new InvalidOperationException();
                     }
 
-                    output.WriteLine("}");
+                    output.WriteLine("    name: \"{0}\",", customizationName);
+
+                    UnrealClass customizationType = customizationDefinition.CustomizationType;
+                    if (customizationType == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    if (_TypeMapping.ContainsKey(customizationType.Path) == false)
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    output.WriteLine("    type: \"{0}\",", _TypeMapping[customizationType.Path]);
+
+                    var usageFlags = ((IEnumerable<UnrealClass>)customizationDefinition.UsageFlags).ToArray();
+
+                    if (usageFlags.Length > 0)
+                    {
+                        if (usageFlags.Length > 1)
+                        {
+                            output.WriteLine("    usage:");
+                            output.WriteLine("    [");
+                        }
+                        else
+                        {
+                            output.Write("    usage: [");
+                        }
+
+                        foreach (var usageFlag in usageFlags.OrderBy(uf => uf.Path))
+                        {
+                            if (usageFlags.Length > 1)
+                            {
+                                output.WriteLine("      ");
+                            }
+
+                            if (_UsageFlagMapping.ContainsKey(usageFlag.Path) == false)
+                            {
+                                throw new NotSupportedException();
+                            }
+
+                            output.Write("\"{0}\"", _UsageFlagMapping[usageFlag.Path]);
+
+                            if (usageFlags.Length > 1)
+                            {
+                                output.WriteLine(",");
+                            }
+                        }
+
+                        if (usageFlags.Length > 1)
+                        {
+                            output.WriteLine("    ],");
+                        }
+                        else
+                        {
+                            output.WriteLine("],");
+                        }
+                    }
+
+                    var otherUsageFlags = customizationDefinition.OtherUsageFlags;
+                    if (otherUsageFlags.Length > 0)
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    output.WriteLine("  },");
                 }
 
-                runtime.ResumeThreads();
-                runtime.CloseProcess();
+                output.WriteLine("}");
             }
         }
 

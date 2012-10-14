@@ -22,12 +22,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
-using Gibbed.Unreflect.Runtime;
 
 namespace DumpBalance
 {
@@ -35,264 +33,243 @@ namespace DumpBalance
     {
         private static void Main(string[] args)
         {
-            var config = Configuration.Load("Borderlands 2.json");
+            new WillowDatamining.Dataminer().Run(args, Go);
+        }
 
-            var processes = Process.GetProcessesByName("borderlands2");
-            if (processes.Length == 0)
+        private static void Go(Engine engine)
+        {
+            var weaponBalanceDefinitionClass = engine.GetClass("WillowGame.WeaponBalanceDefinition");
+            var missionWeaponBalanceDefinitionClass = engine.GetClass("WillowGame.MissionWeaponBalanceDefinition");
+            var inventoryBalanceDefinitionClass = engine.GetClass("WillowGame.InventoryBalanceDefinition");
+            var itemBalanceDefinitionClass = engine.GetClass("WillowGame.ItemBalanceDefinition");
+            var classModBalanceDefinitionClass = engine.GetClass("WillowGame.ClassModBalanceDefinition");
+            if (weaponBalanceDefinitionClass == null ||
+                missionWeaponBalanceDefinitionClass == null ||
+                inventoryBalanceDefinitionClass == null ||
+                itemBalanceDefinitionClass == null ||
+                classModBalanceDefinitionClass == null)
             {
-                return;
+                throw new InvalidOperationException();
             }
 
-            var process = processes.Last();
-            config.AdjustAddresses(process.MainModule);
-
-            using (var runtime = new RuntimeProcess())
+            using (var output = new StreamWriter("Weapon Balance.json", false, Encoding.Unicode))
             {
-                if (runtime.OpenProcess(process) == false)
+                output.WriteLine("{");
+
+                var balanceDefinitions = engine.Objects.Where(o => o.IsA(weaponBalanceDefinitionClass) &&
+                                                                   o.GetName().StartsWith("Default__") == false)
+                    .OrderBy(o => o.GetPath());
+                foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
-                    return;
-                }
+                    output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
+                    output.WriteLine("  {");
 
-                runtime.SuspendThreads();
-
-                var engine = new Engine(config, runtime);
-
-                var weaponBalanceDefinitionClass = engine.GetClass("WillowGame.WeaponBalanceDefinition");
-                var missionWeaponBalanceDefinitionClass = engine.GetClass("WillowGame.MissionWeaponBalanceDefinition");
-                var inventoryBalanceDefinitionClass = engine.GetClass("WillowGame.InventoryBalanceDefinition");
-                var itemBalanceDefinitionClass = engine.GetClass("WillowGame.ItemBalanceDefinition");
-                var classModBalanceDefinitionClass = engine.GetClass("WillowGame.ClassModBalanceDefinition");
-                if (weaponBalanceDefinitionClass == null ||
-                    missionWeaponBalanceDefinitionClass == null ||
-                    inventoryBalanceDefinitionClass == null ||
-                    itemBalanceDefinitionClass == null ||
-                    classModBalanceDefinitionClass == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                using (var output = new StreamWriter("Weapon Balance.json", false, Encoding.Unicode))
-                {
-                    output.WriteLine("{");
-
-                    var balanceDefinitions = engine.Objects.Where(o => o.IsA(weaponBalanceDefinitionClass) &&
-                                                                       o.GetName().StartsWith("Default__") == false)
-                        .OrderBy(o => o.GetPath());
-                    foreach (dynamic balanceDefinition in balanceDefinitions)
+                    var baseDefinition = balanceDefinition.BaseDefinition;
+                    if (baseDefinition != null)
                     {
-                        output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
-                        output.WriteLine("  {");
+                        output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
+                    }
 
-                        var baseDefinition = balanceDefinition.BaseDefinition;
-                        if (baseDefinition != null)
+                    var inventoryDefinition = balanceDefinition.InventoryDefinition;
+                    if (inventoryDefinition != null)
+                    {
+                        output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
+                    }
+
+                    var manufacturers = balanceDefinition.Manufacturers;
+                    if (manufacturers != null &&
+                        manufacturers.Length > 0)
+                    {
+                        if (manufacturers.Length > 1)
                         {
-                            output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
+                            output.WriteLine("    manufacturers:");
+                            output.WriteLine("    [");
+
+                            foreach (
+                                var manufacturer in
+                                    ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
+                                        OrderBy(imbd => imbd.Manufacturer.GetPath()))
+                            {
+                                output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
+                            }
+
+                            output.WriteLine("    ],");
+                        }
+                        else
+                        {
+                            output.WriteLine("    manufacturers: [\"{0}\"],",
+                                             manufacturers[0].Manufacturer.GetPath());
+                        }
+                    }
+
+                    if (balanceDefinition.PartListCollection != null)
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    var partListCollection = balanceDefinition.WeaponPartListCollection;
+                    if (partListCollection == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    if (partListCollection != null)
+                    {
+                        output.WriteLine("    parts:");
+                        output.WriteLine("    {");
+
+                        output.WriteLine("      mode: \"{0}\",",
+                                         (PartReplacementMode)partListCollection.PartReplacementMode);
+
+                        var associatedWeaponType = partListCollection.AssociatedWeaponType;
+                        if (associatedWeaponType != null)
+                        {
+                            output.WriteLine("      type: \"{0}\",", associatedWeaponType.GetPath());
                         }
 
+                        DumpWeaponCustomPartTypeData(output, "body", partListCollection.BodyPartData);
+                        DumpWeaponCustomPartTypeData(output, "grip", partListCollection.GripPartData);
+                        DumpWeaponCustomPartTypeData(output, "barrel", partListCollection.BarrelPartData);
+                        DumpWeaponCustomPartTypeData(output, "sight", partListCollection.SightPartData);
+                        DumpWeaponCustomPartTypeData(output, "stock", partListCollection.StockPartData);
+                        DumpWeaponCustomPartTypeData(output, "elemental", partListCollection.ElementalPartData);
+                        DumpWeaponCustomPartTypeData(output, "accessory1", partListCollection.Accessory1PartData);
+                        DumpWeaponCustomPartTypeData(output, "accessory2", partListCollection.Accessory2PartData);
+                        DumpWeaponCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
+
+                        output.WriteLine("    },");
+                    }
+
+                    output.WriteLine("  },");
+                }
+
+                output.WriteLine("}");
+            }
+
+            using (var output = new StreamWriter("Item Balance.json", false, Encoding.Unicode))
+            {
+                output.WriteLine("{");
+
+                var balanceDefinitions = engine.Objects.Where(
+                    o =>
+                    (o.IsA(inventoryBalanceDefinitionClass) || o.IsA(itemBalanceDefinitionClass) ||
+                     o.IsA(classModBalanceDefinitionClass)) &&
+                    o.GetName().StartsWith("Default__") == false)
+                    .OrderBy(o => o.GetPath());
+                foreach (dynamic balanceDefinition in balanceDefinitions)
+                {
+                    var uclass = balanceDefinition.GetClass();
+
+                    if (uclass != inventoryBalanceDefinitionClass &&
+                        uclass != classModBalanceDefinitionClass)
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
+                    output.WriteLine("  {");
+
+                    var baseDefinition = balanceDefinition.BaseDefinition;
+                    if (baseDefinition != null)
+                    {
+                        output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
+                    }
+
+                    if (uclass == classModBalanceDefinitionClass &&
+                        balanceDefinition.ClassModDefinitions.Length > 0)
+                    {
+                        dynamic[] classModDefinitions = balanceDefinition.ClassModDefinitions;
+
+                        if (classModDefinitions.Length > 1)
+                        {
+                            output.WriteLine("    types:");
+                            output.WriteLine("    [");
+
+                            foreach (var classModDefinition in classModDefinitions.OrderBy(cmd => cmd.GetPath()))
+                            {
+                                output.WriteLine("      \"{0}\",", classModDefinition.GetPath());
+                            }
+
+                            output.WriteLine("    ],");
+                        }
+                        else
+                        {
+                            output.WriteLine("    types: [\"{0}\"],", classModDefinitions[0].GetPath());
+                        }
+                    }
+                    else
+                    {
                         var inventoryDefinition = balanceDefinition.InventoryDefinition;
                         if (inventoryDefinition != null)
                         {
                             output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
                         }
+                    }
 
-                        var manufacturers = balanceDefinition.Manufacturers;
-                        if (manufacturers != null &&
-                            manufacturers.Length > 0)
+                    var manufacturers = balanceDefinition.Manufacturers;
+                    if (manufacturers != null &&
+                        manufacturers.Length > 0)
+                    {
+                        if (manufacturers.Length > 1)
                         {
-                            if (manufacturers.Length > 1)
-                            {
-                                output.WriteLine("    manufacturers:");
-                                output.WriteLine("    [");
+                            output.WriteLine("    manufacturers:");
+                            output.WriteLine("    [");
 
-                                foreach (
-                                    var manufacturer in
-                                        ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
-                                            OrderBy(imbd => imbd.Manufacturer.GetPath()))
-                                {
-                                    output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
-                                }
-
-                                output.WriteLine("    ],");
-                            }
-                            else
+                            foreach (
+                                var manufacturer in
+                                    ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
+                                        OrderBy(imbd => imbd.Manufacturer.GetPath()))
                             {
-                                output.WriteLine("    manufacturers: [\"{0}\"],",
-                                                 manufacturers[0].Manufacturer.GetPath());
+                                output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
                             }
+
+                            output.WriteLine("    ],");
                         }
-
-                        if (balanceDefinition.PartListCollection != null)
+                        else
                         {
-                            throw new NotSupportedException();
+                            output.WriteLine("    manufacturers: [\"{0}\"],",
+                                             manufacturers[0].Manufacturer.GetPath());
                         }
+                    }
 
-                        var partListCollection = balanceDefinition.WeaponPartListCollection;
-                        if (partListCollection == null)
+                    var partListCollection = uclass == classModBalanceDefinitionClass
+                                                 ? balanceDefinition.ItemPartListCollection
+                                                 : balanceDefinition.PartListCollection;
+                    if (partListCollection != null)
+                    {
+                        if (partListCollection.GetClass().Path != "WillowGame.ItemPartListCollectionDefinition")
                         {
                             throw new InvalidOperationException();
                         }
 
-                        if (partListCollection != null)
+                        output.WriteLine("    parts:");
+                        output.WriteLine("    {");
+                        output.WriteLine("      mode: \"{0}\",",
+                                         (PartReplacementMode)partListCollection.PartReplacementMode);
+
+                        var associatedItem = partListCollection.AssociatedItem;
+                        if (associatedItem != null)
                         {
-                            output.WriteLine("    parts:");
-                            output.WriteLine("    {");
-
-                            output.WriteLine("      mode: \"{0}\",",
-                                             (PartReplacementMode)partListCollection.PartReplacementMode);
-
-                            var associatedWeaponType = partListCollection.AssociatedWeaponType;
-                            if (associatedWeaponType != null)
-                            {
-                                output.WriteLine("      type: \"{0}\",", associatedWeaponType.GetPath());
-                            }
-
-                            DumpWeaponCustomPartTypeData(output, "body", partListCollection.BodyPartData);
-                            DumpWeaponCustomPartTypeData(output, "grip", partListCollection.GripPartData);
-                            DumpWeaponCustomPartTypeData(output, "barrel", partListCollection.BarrelPartData);
-                            DumpWeaponCustomPartTypeData(output, "sight", partListCollection.SightPartData);
-                            DumpWeaponCustomPartTypeData(output, "stock", partListCollection.StockPartData);
-                            DumpWeaponCustomPartTypeData(output, "elemental", partListCollection.ElementalPartData);
-                            DumpWeaponCustomPartTypeData(output, "accessory1", partListCollection.Accessory1PartData);
-                            DumpWeaponCustomPartTypeData(output, "accessory2", partListCollection.Accessory2PartData);
-                            DumpWeaponCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
-
-                            output.WriteLine("    },");
+                            output.WriteLine("      type: \"{0}\",", associatedItem.GetPath());
                         }
 
-                        output.WriteLine("  },");
+                        DumpItemCustomPartTypeData(output, "alpha", partListCollection.AlphaPartData);
+                        DumpItemCustomPartTypeData(output, "beta", partListCollection.BetaPartData);
+                        DumpItemCustomPartTypeData(output, "gamma", partListCollection.GammaPartData);
+                        DumpItemCustomPartTypeData(output, "delta", partListCollection.DeltaPartData);
+                        DumpItemCustomPartTypeData(output, "epsilon", partListCollection.EpsilonPartData);
+                        DumpItemCustomPartTypeData(output, "zeta", partListCollection.ZetaPartData);
+                        DumpItemCustomPartTypeData(output, "eta", partListCollection.EtaPartData);
+                        DumpItemCustomPartTypeData(output, "theta", partListCollection.ThetaPartData);
+                        DumpItemCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
+
+                        output.WriteLine("    },");
                     }
 
-                    output.WriteLine("}");
+                    output.WriteLine("  },");
                 }
 
-                using (var output = new StreamWriter("Item Balance.json", false, Encoding.Unicode))
-                {
-                    output.WriteLine("{");
-
-                    var balanceDefinitions = engine.Objects.Where(
-                        o =>
-                        (o.IsA(inventoryBalanceDefinitionClass) || o.IsA(itemBalanceDefinitionClass) ||
-                         o.IsA(classModBalanceDefinitionClass)) &&
-                        o.GetName().StartsWith("Default__") == false)
-                        .OrderBy(o => o.GetPath());
-                    foreach (dynamic balanceDefinition in balanceDefinitions)
-                    {
-                        var uclass = balanceDefinition.GetClass();
-
-                        if (uclass != inventoryBalanceDefinitionClass &&
-                            uclass != classModBalanceDefinitionClass)
-                        {
-                            throw new NotSupportedException();
-                        }
-
-                        output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
-                        output.WriteLine("  {");
-
-                        var baseDefinition = balanceDefinition.BaseDefinition;
-                        if (baseDefinition != null)
-                        {
-                            output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
-                        }
-
-                        if (uclass == classModBalanceDefinitionClass &&
-                            balanceDefinition.ClassModDefinitions.Length > 0)
-                        {
-                            dynamic[] classModDefinitions = balanceDefinition.ClassModDefinitions;
-
-                            if (classModDefinitions.Length > 1)
-                            {
-                                output.WriteLine("    types:");
-                                output.WriteLine("    [");
-
-                                foreach (var classModDefinition in classModDefinitions.OrderBy(cmd => cmd.GetPath()))
-                                {
-                                    output.WriteLine("      \"{0}\",", classModDefinition.GetPath());
-                                }
-
-                                output.WriteLine("    ],");
-                            }
-                            else
-                            {
-                                output.WriteLine("    types: [\"{0}\"],", classModDefinitions[0].GetPath());
-                            }
-                        }
-                        else
-                        {
-                            var inventoryDefinition = balanceDefinition.InventoryDefinition;
-                            if (inventoryDefinition != null)
-                            {
-                                output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
-                            }
-                        }
-
-                        var manufacturers = balanceDefinition.Manufacturers;
-                        if (manufacturers != null &&
-                            manufacturers.Length > 0)
-                        {
-                            if (manufacturers.Length > 1)
-                            {
-                                output.WriteLine("    manufacturers:");
-                                output.WriteLine("    [");
-
-                                foreach (
-                                    var manufacturer in
-                                        ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
-                                            OrderBy(imbd => imbd.Manufacturer.GetPath()))
-                                {
-                                    output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
-                                }
-
-                                output.WriteLine("    ],");
-                            }
-                            else
-                            {
-                                output.WriteLine("    manufacturers: [\"{0}\"],",
-                                                 manufacturers[0].Manufacturer.GetPath());
-                            }
-                        }
-
-                        var partListCollection = uclass == classModBalanceDefinitionClass
-                                                     ? balanceDefinition.ItemPartListCollection
-                                                     : balanceDefinition.PartListCollection;
-                        if (partListCollection != null)
-                        {
-                            if (partListCollection.GetClass().Path != "WillowGame.ItemPartListCollectionDefinition")
-                            {
-                                throw new InvalidOperationException();
-                            }
-
-                            output.WriteLine("    parts:");
-                            output.WriteLine("    {");
-                            output.WriteLine("      mode: \"{0}\",",
-                                             (PartReplacementMode)partListCollection.PartReplacementMode);
-
-                            var associatedItem = partListCollection.AssociatedItem;
-                            if (associatedItem != null)
-                            {
-                                output.WriteLine("      type: \"{0}\",", associatedItem.GetPath());
-                            }
-
-                            DumpItemCustomPartTypeData(output, "alpha", partListCollection.AlphaPartData);
-                            DumpItemCustomPartTypeData(output, "beta", partListCollection.BetaPartData);
-                            DumpItemCustomPartTypeData(output, "gamma", partListCollection.GammaPartData);
-                            DumpItemCustomPartTypeData(output, "delta", partListCollection.DeltaPartData);
-                            DumpItemCustomPartTypeData(output, "epsilon", partListCollection.EpsilonPartData);
-                            DumpItemCustomPartTypeData(output, "zeta", partListCollection.ZetaPartData);
-                            DumpItemCustomPartTypeData(output, "eta", partListCollection.EtaPartData);
-                            DumpItemCustomPartTypeData(output, "theta", partListCollection.ThetaPartData);
-                            DumpItemCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
-
-                            output.WriteLine("    },");
-                        }
-
-                        output.WriteLine("  },");
-                    }
-
-                    output.WriteLine("}");
-                }
-
-                runtime.ResumeThreads();
-                runtime.CloseProcess();
+                output.WriteLine("}");
             }
         }
 
