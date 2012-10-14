@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
+using Newtonsoft.Json;
 
 namespace DumpBalance
 {
@@ -53,53 +54,54 @@ namespace DumpBalance
             }
 
             using (var output = new StreamWriter("Weapon Balance.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
             {
-                output.WriteLine("{");
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
 
                 var balanceDefinitions = engine.Objects.Where(o => o.IsA(weaponBalanceDefinitionClass) &&
                                                                    o.GetName().StartsWith("Default__") == false)
                     .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
-                    output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
-                    output.WriteLine("  {");
+                    writer.WritePropertyName(balanceDefinition.GetPath());
+                    writer.WriteStartObject();
 
                     var baseDefinition = balanceDefinition.BaseDefinition;
                     if (baseDefinition != null)
                     {
-                        output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
+                        writer.WritePropertyName("base");
+                        writer.WriteValue(baseDefinition.GetPath());
                     }
 
                     var inventoryDefinition = balanceDefinition.InventoryDefinition;
                     if (inventoryDefinition != null)
                     {
-                        output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
+                        writer.WritePropertyName("types");
+                        writer.WriteStartArray();
+                        writer.WriteValue(inventoryDefinition.GetPath());
+                        writer.WriteEndArray();
                     }
 
                     var manufacturers = balanceDefinition.Manufacturers;
                     if (manufacturers != null &&
                         manufacturers.Length > 0)
                     {
-                        if (manufacturers.Length > 1)
-                        {
-                            output.WriteLine("    manufacturers:");
-                            output.WriteLine("    [");
+                        writer.WritePropertyName("manufacturers");
+                        writer.WriteStartArray();
 
-                            foreach (
-                                var manufacturer in
-                                    ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
-                                        OrderBy(imbd => imbd.Manufacturer.GetPath()))
-                            {
-                                output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
-                            }
-
-                            output.WriteLine("    ],");
-                        }
-                        else
+                        foreach (
+                            var manufacturer in
+                                ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).OrderBy(
+                                    imbd => imbd.Manufacturer.GetPath()))
                         {
-                            output.WriteLine("    manufacturers: [\"{0}\"],",
-                                             manufacturers[0].Manufacturer.GetPath());
+                            writer.WriteValue(manufacturer.Manufacturer.GetPath());
                         }
+
+                        writer.WriteEndArray();
                     }
 
                     if (balanceDefinition.PartListCollection != null)
@@ -115,40 +117,46 @@ namespace DumpBalance
 
                     if (partListCollection != null)
                     {
-                        output.WriteLine("    parts:");
-                        output.WriteLine("    {");
+                        writer.WritePropertyName("parts");
+                        writer.WriteStartObject();
 
-                        output.WriteLine("      mode: \"{0}\",",
-                                         (PartReplacementMode)partListCollection.PartReplacementMode);
+                        writer.WritePropertyName("mode");
+                        writer.WriteValue(((PartReplacementMode)partListCollection.PartReplacementMode).ToString());
 
                         var associatedWeaponType = partListCollection.AssociatedWeaponType;
                         if (associatedWeaponType != null)
                         {
-                            output.WriteLine("      type: \"{0}\",", associatedWeaponType.GetPath());
+                            writer.WritePropertyName("type");
+                            writer.WriteValue(associatedWeaponType.GetPath());
                         }
 
-                        DumpWeaponCustomPartTypeData(output, "body", partListCollection.BodyPartData);
-                        DumpWeaponCustomPartTypeData(output, "grip", partListCollection.GripPartData);
-                        DumpWeaponCustomPartTypeData(output, "barrel", partListCollection.BarrelPartData);
-                        DumpWeaponCustomPartTypeData(output, "sight", partListCollection.SightPartData);
-                        DumpWeaponCustomPartTypeData(output, "stock", partListCollection.StockPartData);
-                        DumpWeaponCustomPartTypeData(output, "elemental", partListCollection.ElementalPartData);
-                        DumpWeaponCustomPartTypeData(output, "accessory1", partListCollection.Accessory1PartData);
-                        DumpWeaponCustomPartTypeData(output, "accessory2", partListCollection.Accessory2PartData);
-                        DumpWeaponCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
+                        DumpWeaponCustomPartTypeData(writer, "body", partListCollection.BodyPartData);
+                        DumpWeaponCustomPartTypeData(writer, "grip", partListCollection.GripPartData);
+                        DumpWeaponCustomPartTypeData(writer, "barrel", partListCollection.BarrelPartData);
+                        DumpWeaponCustomPartTypeData(writer, "sight", partListCollection.SightPartData);
+                        DumpWeaponCustomPartTypeData(writer, "stock", partListCollection.StockPartData);
+                        DumpWeaponCustomPartTypeData(writer, "elemental", partListCollection.ElementalPartData);
+                        DumpWeaponCustomPartTypeData(writer, "accessory1", partListCollection.Accessory1PartData);
+                        DumpWeaponCustomPartTypeData(writer, "accessory2", partListCollection.Accessory2PartData);
+                        DumpWeaponCustomPartTypeData(writer, "material", partListCollection.MaterialPartData);
 
-                        output.WriteLine("    },");
+                        writer.WriteEndObject();
                     }
 
-                    output.WriteLine("  },");
+                    writer.WriteEndObject();
                 }
 
-                output.WriteLine("}");
+                writer.WriteEndObject();
             }
 
             using (var output = new StreamWriter("Item Balance.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
             {
-                output.WriteLine("{");
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
 
                 var balanceDefinitions = engine.Objects.Where(
                     o =>
@@ -166,13 +174,14 @@ namespace DumpBalance
                         throw new NotSupportedException();
                     }
 
-                    output.WriteLine("  \"{0}\":", balanceDefinition.GetPath());
-                    output.WriteLine("  {");
+                    writer.WritePropertyName(balanceDefinition.GetPath());
+                    writer.WriteStartObject();
 
                     var baseDefinition = balanceDefinition.BaseDefinition;
                     if (baseDefinition != null)
                     {
-                        output.WriteLine("    base: \"{0}\",", baseDefinition.GetPath());
+                        writer.WritePropertyName("base");
+                        writer.WriteValue(baseDefinition.GetPath());
                     }
 
                     if (uclass == classModBalanceDefinitionClass &&
@@ -180,29 +189,23 @@ namespace DumpBalance
                     {
                         dynamic[] classModDefinitions = balanceDefinition.ClassModDefinitions;
 
-                        if (classModDefinitions.Length > 1)
+                        writer.WritePropertyName("types");
+                        writer.WriteStartArray();
+                        foreach (var classModDefinition in classModDefinitions.OrderBy(cmd => cmd.GetPath()))
                         {
-                            output.WriteLine("    types:");
-                            output.WriteLine("    [");
-
-                            foreach (var classModDefinition in classModDefinitions.OrderBy(cmd => cmd.GetPath()))
-                            {
-                                output.WriteLine("      \"{0}\",", classModDefinition.GetPath());
-                            }
-
-                            output.WriteLine("    ],");
+                            writer.WriteValue(classModDefinition.GetPath());
                         }
-                        else
-                        {
-                            output.WriteLine("    types: [\"{0}\"],", classModDefinitions[0].GetPath());
-                        }
+                        writer.WriteEndArray();
                     }
                     else
                     {
                         var inventoryDefinition = balanceDefinition.InventoryDefinition;
                         if (inventoryDefinition != null)
                         {
-                            output.WriteLine("    types: [\"{0}\"],", inventoryDefinition.GetPath());
+                            writer.WritePropertyName("types");
+                            writer.WriteStartArray();
+                            writer.WriteValue(inventoryDefinition.GetPath());
+                            writer.WriteEndArray();
                         }
                     }
 
@@ -210,26 +213,16 @@ namespace DumpBalance
                     if (manufacturers != null &&
                         manufacturers.Length > 0)
                     {
-                        if (manufacturers.Length > 1)
+                        writer.WritePropertyName("manufacturers");
+                        writer.WriteStartArray();
+                        foreach (
+                            var manufacturer in
+                                ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).OrderBy(
+                                    imbd => imbd.Manufacturer.GetPath()))
                         {
-                            output.WriteLine("    manufacturers:");
-                            output.WriteLine("    [");
-
-                            foreach (
-                                var manufacturer in
-                                    ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).
-                                        OrderBy(imbd => imbd.Manufacturer.GetPath()))
-                            {
-                                output.WriteLine("      \"{0}\",", manufacturer.Manufacturer.GetPath());
-                            }
-
-                            output.WriteLine("    ],");
+                            writer.WriteValue(manufacturer.Manufacturer.GetPath());
                         }
-                        else
-                        {
-                            output.WriteLine("    manufacturers: [\"{0}\"],",
-                                             manufacturers[0].Manufacturer.GetPath());
-                        }
+                        writer.WriteEndArray();
                     }
 
                     var partListCollection = uclass == classModBalanceDefinitionClass
@@ -242,38 +235,40 @@ namespace DumpBalance
                             throw new InvalidOperationException();
                         }
 
-                        output.WriteLine("    parts:");
-                        output.WriteLine("    {");
-                        output.WriteLine("      mode: \"{0}\",",
-                                         (PartReplacementMode)partListCollection.PartReplacementMode);
+                        writer.WritePropertyName("parts");
+                        writer.WriteStartObject();
+
+                        writer.WritePropertyName("mode");
+                        writer.WriteValue(((PartReplacementMode)partListCollection.PartReplacementMode).ToString());
 
                         var associatedItem = partListCollection.AssociatedItem;
                         if (associatedItem != null)
                         {
-                            output.WriteLine("      type: \"{0}\",", associatedItem.GetPath());
+                            writer.WritePropertyName("type");
+                            writer.WriteValue(associatedItem.GetPath());
                         }
 
-                        DumpItemCustomPartTypeData(output, "alpha", partListCollection.AlphaPartData);
-                        DumpItemCustomPartTypeData(output, "beta", partListCollection.BetaPartData);
-                        DumpItemCustomPartTypeData(output, "gamma", partListCollection.GammaPartData);
-                        DumpItemCustomPartTypeData(output, "delta", partListCollection.DeltaPartData);
-                        DumpItemCustomPartTypeData(output, "epsilon", partListCollection.EpsilonPartData);
-                        DumpItemCustomPartTypeData(output, "zeta", partListCollection.ZetaPartData);
-                        DumpItemCustomPartTypeData(output, "eta", partListCollection.EtaPartData);
-                        DumpItemCustomPartTypeData(output, "theta", partListCollection.ThetaPartData);
-                        DumpItemCustomPartTypeData(output, "material", partListCollection.MaterialPartData);
+                        DumpItemCustomPartTypeData(writer, "alpha", partListCollection.AlphaPartData);
+                        DumpItemCustomPartTypeData(writer, "beta", partListCollection.BetaPartData);
+                        DumpItemCustomPartTypeData(writer, "gamma", partListCollection.GammaPartData);
+                        DumpItemCustomPartTypeData(writer, "delta", partListCollection.DeltaPartData);
+                        DumpItemCustomPartTypeData(writer, "epsilon", partListCollection.EpsilonPartData);
+                        DumpItemCustomPartTypeData(writer, "zeta", partListCollection.ZetaPartData);
+                        DumpItemCustomPartTypeData(writer, "eta", partListCollection.EtaPartData);
+                        DumpItemCustomPartTypeData(writer, "theta", partListCollection.ThetaPartData);
+                        DumpItemCustomPartTypeData(writer, "material", partListCollection.MaterialPartData);
 
-                        output.WriteLine("    },");
+                        writer.WriteEndObject();
                     }
 
-                    output.WriteLine("  },");
+                    writer.WriteEndObject();
                 }
 
-                output.WriteLine("}");
+                writer.WriteEndObject();
             }
         }
 
-        private static void DumpWeaponCustomPartTypeData(StreamWriter output, string name, dynamic customPartTypeData)
+        private static void DumpWeaponCustomPartTypeData(JsonWriter writer, string name, dynamic customPartTypeData)
         {
             if (customPartTypeData == null)
             {
@@ -286,31 +281,16 @@ namespace DumpBalance
             }
 
             dynamic[] weightedParts = customPartTypeData.WeightedParts;
-            if (weightedParts.Length > 1)
+            writer.WritePropertyName(name);
+            writer.WriteStartArray();
+            foreach (var weightedPart in weightedParts)
             {
-                output.WriteLine("      {0}:", name);
-                output.WriteLine("      [");
-
-                foreach (var weightedPart in weightedParts)
-                {
-                    output.WriteLine("        \"{0}\",", weightedPart.Part.GetPath());
-                }
-
-                output.WriteLine("      ],");
+                writer.WriteValue(weightedPart.Part.GetPath());
             }
-            else if (weightedParts.Length == 1)
-            {
-                output.WriteLine("      {0}: [\"{1}\"],",
-                                 name,
-                                 weightedParts[0].Part.GetPath());
-            }
-            else
-            {
-                output.WriteLine("      {0}: [],", name);
-            }
+            writer.WriteEndArray();
         }
 
-        private static void DumpItemCustomPartTypeData(StreamWriter output, string name, dynamic customPartTypeData)
+        private static void DumpItemCustomPartTypeData(JsonWriter writer, string name, dynamic customPartTypeData)
         {
             if (customPartTypeData == null)
             {
@@ -323,28 +303,13 @@ namespace DumpBalance
             }
 
             dynamic[] weightedParts = customPartTypeData.WeightedParts;
-            if (weightedParts.Length > 1)
+            writer.WritePropertyName(name);
+            writer.WriteStartArray();
+            foreach (var weightedPart in weightedParts)
             {
-                output.WriteLine("      {0}:", name);
-                output.WriteLine("      [");
-
-                foreach (var weightedPart in weightedParts)
-                {
-                    output.WriteLine("        \"{0}\",", weightedPart.Part.GetPath());
-                }
-
-                output.WriteLine("      ],");
+                writer.WriteValue(weightedPart.Part.GetPath());
             }
-            else if (weightedParts.Length == 1)
-            {
-                output.WriteLine("      {0}: [\"{1}\"],",
-                                 name,
-                                 weightedParts[0].Part.GetPath());
-            }
-            else
-            {
-                output.WriteLine("      {0}: [],", name);
-            }
+            writer.WriteEndArray();
         }
     }
 }

@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
+using Newtonsoft.Json;
 
 namespace DumpCustomizations
 {
@@ -45,8 +46,13 @@ namespace DumpCustomizations
             }
 
             using (var output = new StreamWriter("Customization.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
             {
-                output.WriteLine("{");
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
 
                 var customizationDefinitions = engine.Objects
                     .Where(o => o.IsA(customizationDefinitionClass) &&
@@ -55,8 +61,8 @@ namespace DumpCustomizations
                     .OrderBy(o => o.GetPath());
                 foreach (dynamic customizationDefinition in customizationDefinitions)
                 {
-                    output.WriteLine("  \"{0}\":", customizationDefinition.GetPath());
-                    output.WriteLine("  {");
+                    writer.WritePropertyName(customizationDefinition.GetPath());
+                    writer.WriteStartObject();
 
                     string customizationName = customizationDefinition.CustomizationName;
                     if (customizationName == null)
@@ -64,7 +70,8 @@ namespace DumpCustomizations
                         throw new InvalidOperationException();
                     }
 
-                    output.WriteLine("    name: \"{0}\",", customizationName);
+                    writer.WritePropertyName("name");
+                    writer.WriteValue(customizationName);
 
                     UnrealClass customizationType = customizationDefinition.CustomizationType;
                     if (customizationType == null)
@@ -77,50 +84,25 @@ namespace DumpCustomizations
                         throw new NotSupportedException();
                     }
 
-                    output.WriteLine("    type: \"{0}\",", _TypeMapping[customizationType.Path]);
+                    writer.WritePropertyName("type");
+                    writer.WriteValue(_TypeMapping[customizationType.Path]);
 
                     var usageFlags = ((IEnumerable<UnrealClass>)customizationDefinition.UsageFlags).ToArray();
 
                     if (usageFlags.Length > 0)
                     {
-                        if (usageFlags.Length > 1)
-                        {
-                            output.WriteLine("    usage:");
-                            output.WriteLine("    [");
-                        }
-                        else
-                        {
-                            output.Write("    usage: [");
-                        }
-
+                        writer.WritePropertyName("usage");
+                        writer.WriteStartArray();
                         foreach (var usageFlag in usageFlags.OrderBy(uf => uf.Path))
                         {
-                            if (usageFlags.Length > 1)
-                            {
-                                output.WriteLine("      ");
-                            }
-
                             if (_UsageFlagMapping.ContainsKey(usageFlag.Path) == false)
                             {
                                 throw new NotSupportedException();
                             }
 
-                            output.Write("\"{0}\"", _UsageFlagMapping[usageFlag.Path]);
-
-                            if (usageFlags.Length > 1)
-                            {
-                                output.WriteLine(",");
-                            }
+                            writer.WriteValue(_UsageFlagMapping[usageFlag.Path]);
                         }
-
-                        if (usageFlags.Length > 1)
-                        {
-                            output.WriteLine("    ],");
-                        }
-                        else
-                        {
-                            output.WriteLine("],");
-                        }
+                        writer.WriteEndArray();
                     }
 
                     var otherUsageFlags = customizationDefinition.OtherUsageFlags;
@@ -129,10 +111,11 @@ namespace DumpCustomizations
                         throw new NotSupportedException();
                     }
 
-                    output.WriteLine("  },");
+                    writer.WriteEndObject();
                 }
 
-                output.WriteLine("}");
+                writer.WriteEndObject();
+                writer.Flush();
             }
         }
 

@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Gibbed.Unreflect.Core;
+using Newtonsoft.Json;
 
 namespace DumpAssetLibraryManager
 {
@@ -58,46 +59,62 @@ namespace DumpAssetLibraryManager
             }
 
             using (var output = new StreamWriter("Asset Library Manager.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
             {
-                output.WriteLine("{");
-                output.WriteLine("  version: 7,");
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
 
-                output.WriteLine("  configs:");
-                output.WriteLine("  {");
+                writer.WriteStartObject();
 
+                writer.WritePropertyName("version");
+                writer.WriteValue(7);
+
+                writer.WritePropertyName("configs");
+                writer.WriteStartObject();
                 foreach (dynamic libraryConfig in assLibMan.LibraryConfigs)
                 {
-                    output.WriteLine("    \"{0}\":", ((string)libraryConfig.Desc).Replace(" ", ""));
-                    output.WriteLine("    {");
-                    output.WriteLine("      sublibrary_bits: {0},", libraryConfig.SublibraryBits);
-                    output.WriteLine("      asset_bits: {0},", libraryConfig.AssetBits);
-                    output.WriteLine("      type: \"{0}\",", ((UnrealClass)libraryConfig.LibraryType).Path);
-                    output.WriteLine("    },");
+                    writer.WritePropertyName(((string)libraryConfig.Desc).Replace(" ", ""));
+                    writer.WriteStartObject();
+
+                    writer.WritePropertyName("sublibrary_bits");
+                    writer.WriteValue(libraryConfig.SublibraryBits);
+
+                    writer.WritePropertyName("asset_bits");
+                    writer.WriteValue(libraryConfig.AssetBits);
+
+                    writer.WritePropertyName("type");
+                    writer.WriteValue(((UnrealClass)libraryConfig.LibraryType).Path);
+
+                    writer.WriteEndObject();
                 }
-                output.WriteLine("  },");
+                writer.WriteEndObject();
 
-                output.WriteLine("  sets:");
-                output.WriteLine("  [");
-
+                writer.WritePropertyName("sets");
+                writer.WriteStartArray();
                 foreach (dynamic assetLibrarySet in assLibMan.RuntimeAssetLibraries)
                 {
-                    output.WriteLine("    {");
-                    output.WriteLine("      id: {0},", assetLibrarySet.Id);
-                    output.WriteLine("      libraries:");
-                    output.WriteLine("      {");
+                    writer.WriteStartObject();
+
+                    writer.WritePropertyName("id");
+                    writer.WriteValue(assetLibrarySet.Id);
+
+                    writer.WritePropertyName("libraries");
+                    writer.WriteStartObject();
 
                     int libraryIndex = 0;
                     foreach (dynamic library in assetLibrarySet.Libraries)
                     {
                         string desc = assLibMan.LibraryConfigs[libraryIndex].Desc;
 
-                        output.WriteLine("        \"{0}\":", desc.Replace(" ", ""));
-                        output.WriteLine("        {");
+                        writer.WritePropertyName(desc.Replace(" ", ""));
+                        writer.WriteStartObject();
 
-                        output.WriteLine("          type: \"{0}\",", ((UnrealClass)library.LibraryType).Path);
+                        writer.WritePropertyName("type");
+                        writer.WriteValue(((UnrealClass)library.LibraryType).Path);
 
-                        output.WriteLine("          sublibraries:");
-                        output.WriteLine("          [");
+                        writer.WritePropertyName("sublibraries");
+                        writer.WriteStartArray();
 
                         if (library.Sublibraries.Length != library.SublibraryLinks.Length)
                         {
@@ -107,17 +124,19 @@ namespace DumpAssetLibraryManager
                         int sublibraryIndex = 0;
                         foreach (dynamic sublibrary in library.SublibraryLinks)
                         {
-                            output.WriteLine("            {");
-                            output.WriteLine("              description: \"{0}\",",
-                                             library.Sublibraries[sublibraryIndex]);
+                            writer.WriteStartObject();
+
+                            writer.WritePropertyName("description");
+                            writer.WriteValue(library.Sublibraries[sublibraryIndex]);
 
                             if (sublibrary != null)
                             {
-                                output.WriteLine("              package: \"{0}\",", sublibrary.CachedPackageName);
+                                writer.WritePropertyName("package");
+                                writer.WriteValue(sublibrary.CachedPackageName);
                             }
 
-                            output.WriteLine("              assets:");
-                            output.WriteLine("              [");
+                            writer.WritePropertyName("assets");
+                            writer.WriteStartArray();
 
                             if (sublibrary != null)
                             {
@@ -145,29 +164,29 @@ namespace DumpAssetLibraryManager
 
                                     parts.Reverse();
                                     var path = string.Join(".", parts.ToArray());
-                                    output.WriteLine("                \"{0}\",", path);
+
+                                    writer.WriteValue(path);
                                 }
                             }
 
-                            output.WriteLine("              ],");
-                            output.WriteLine("            },");
+                            writer.WriteEndArray();
+                            writer.WriteEndObject();
 
                             sublibraryIndex++;
                         }
 
-                        output.WriteLine("          ],");
-                        output.WriteLine("        },");
+                        writer.WriteEndArray();
+                        writer.WriteEndObject();
 
                         libraryIndex++;
                     }
 
-                    output.WriteLine("      },");
-                    output.WriteLine("    },");
+                    writer.WriteEndObject();
+                    writer.WriteEndObject();
                 }
+                writer.WriteEndArray();
 
-                output.WriteLine("  ],");
-
-                output.WriteLine("}");
+                writer.WriteEndObject();
             }
         }
     }
