@@ -22,7 +22,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
+using System.Linq;
 using Gibbed.Unreflect.Core;
 using Gibbed.Unreflect.Runtime;
 
@@ -42,7 +42,10 @@ namespace WillowDatamining
             foreach (var process in processes)
             {
                 var fvi = process.MainModule.FileVersionInfo;
-                var build = fvi.FileBuildPart.ToString(CultureInfo.InvariantCulture);
+                /* FileVersionInfo seems to be bugged and ProductPrivatePart
+                 * doesn't actually contain the right value, so we'll extract it
+                 * from ProductVersion. */
+                var build = fvi.ProductVersion.Split('.').Last();
                 config = Configurations.ResourceManager.GetString(build);
                 if (config != null)
                 {
