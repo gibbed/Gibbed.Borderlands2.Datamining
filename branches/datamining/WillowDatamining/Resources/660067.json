@@ -1,0 +1,13 @@
+/* version 1.0.3 */
+{
+    global_name_array_address: 26761604, /* 01985984 */
+  global_object_array_address: 27032928, /* 019C7D60 */
+
+           object_name_offset: 44, /* 2C */
+          object_outer_offset: 40, /* 28 */
+          object_class_offset: 52, /* 34 */
+
+     class_first_field_offset: 108, /* 6C */
+
+      field_next_field_offset: 100, /* 64 */
+}
