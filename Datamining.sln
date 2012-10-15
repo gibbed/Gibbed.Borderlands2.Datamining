@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchVaultHunterRelic", "Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpFastTravelStations", "DumpFastTravelStations\DumpFastTravelStations.csproj", "{EBE7991F-5842-4D65-BADA-EBA755D4B478}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpDeveloperPerks", "DumpDeveloperPerks\DumpDeveloperPerks.csproj", "{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,16 @@ Global
 		{EBE7991F-5842-4D65-BADA-EBA755D4B478}.Release|Mixed Platforms.Build.0 = Release|x86
 		{EBE7991F-5842-4D65-BADA-EBA755D4B478}.Release|x86.ActiveCfg = Release|x86
 		{EBE7991F-5842-4D65-BADA-EBA755D4B478}.Release|x86.Build.0 = Release|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Debug|x86.ActiveCfg = Debug|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Debug|x86.Build.0 = Debug|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|Any CPU.ActiveCfg = Release|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|Mixed Platforms.Build.0 = Release|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|x86.ActiveCfg = Release|x86
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,5 +167,6 @@ Global
 		{19FA4343-9909-4885-832F-2D2875F54264} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{B751285C-78A9-4EF1-B447-D4F194E8EF8E} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{EBE7991F-5842-4D65-BADA-EBA755D4B478} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
+		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 	EndGlobalSection
 EndGlobal
