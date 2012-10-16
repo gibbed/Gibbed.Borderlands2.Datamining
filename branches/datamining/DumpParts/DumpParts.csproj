@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{19FA4343-9909-4885-832F-2D2875F54264}</ProjectGuid>
+    <ProjectGuid>{0905C6C1-1DA7-4B63-B392-727674D06C5A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DumpItems</RootNamespace>
-    <AssemblyName>DumpItems</AssemblyName>
+    <RootNamespace>DumpParts</RootNamespace>
+    <AssemblyName>DumpParts</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.9\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -50,16 +50,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WeaponType.cs" />
+    <Compile Include="WeaponPartType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gibbed.Unreflect.Core\Gibbed.Unreflect.Core.csproj">
       <Project>{5CB232F6-6E10-4D06-83B6-8238895ED36F}</Project>
       <Name>Gibbed.Unreflect.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Gibbed.Unreflect.Runtime\Gibbed.Unreflect.Runtime.csproj">
-      <Project>{78358FEB-E627-490E-8701-3C5DBE2D72FA}</Project>
-      <Name>Gibbed.Unreflect.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="..\WillowDatamining\WillowDatamining.csproj">
       <Project>{3E2F2EC6-F71F-4F39-9A29-2CF32F650BE3}</Project>
