@@ -231,8 +231,14 @@ namespace DumpItems
                         throw new InvalidOperationException();
                     }
 
-                    writer.WritePropertyName("name");
-                    writer.WriteValue(itemType.ItemName);
+                    if (string.IsNullOrEmpty((string)itemType.ItemName) == false)
+                    {
+                        writer.WritePropertyName("name");
+                        writer.WriteValue(itemType.ItemName);
+                    }
+
+                    writer.WritePropertyName("type");
+                    writer.WriteValue(_ItemTypeMapping[itemPartClass.Path]);
 
                     if (itemType.TitleList != null &&
                         itemType.TitleList.Length > 0)
@@ -283,19 +289,46 @@ namespace DumpItems
 
         private static void DumpCustomPartTypeData(JsonWriter writer, string name, dynamic customPartTypeData)
         {
-            writer.WritePropertyName(name);
-            writer.WriteStartArray();
-
             if (customPartTypeData != null)
             {
-                IEnumerable<dynamic> weightedParts = customPartTypeData.WeightedParts;
-                foreach (var weightedPart in weightedParts.Where(wp => wp.Part != null).OrderBy(wp => wp.Part.GetPath())
-                    )
+                var weightedParts = ((IEnumerable<dynamic>)customPartTypeData.WeightedParts).ToArray();
+                if (weightedParts.Length > 0)
                 {
-                    writer.WriteValue(weightedPart.Part.GetPath());
+                    writer.WritePropertyName(name);
+                    writer.WriteStartArray();
+
+                    foreach (var weightedPart in weightedParts
+                        .Where(wp => wp.Part != null)
+                        .OrderBy(wp => wp.Part.GetPath()))
+                    {
+                        writer.WriteValue(weightedPart.Part.GetPath());
+                    }
+
+                    writer.WriteEndArray();
                 }
             }
-            writer.WriteEndArray();
         }
+
+        private static Dictionary<string, string> _ItemTypeMapping = new Dictionary<string, string>()
+        {
+            {
+                "WillowGame.ArtifactDefinition", "Artifact"
+                },
+            {
+                "WillowGame.ClassModDefinition", "ClassMod"
+                },
+            {
+                "WillowGame.GrenadeModDefinition", "GrenadeMod"
+                },
+            {
+                "WillowGame.ShieldDefinition", "Shield"
+                },
+            {
+                "WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem"
+                },
+            {
+                "WillowGame.UsableItemDefinition", "UsableItem"
+                },
+        };
     }
 }
