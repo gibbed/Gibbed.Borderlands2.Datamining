@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpFastTravelStations", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpDeveloperPerks", "DumpDeveloperPerks\DumpDeveloperPerks.csproj", "{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpParts", "DumpParts\DumpParts.csproj", "{0905C6C1-1DA7-4B63-B392-727674D06C5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -154,6 +156,16 @@ Global
 		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|x86.ActiveCfg = Release|x86
 		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011}.Release|x86.Build.0 = Release|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Debug|x86.ActiveCfg = Debug|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Debug|x86.Build.0 = Debug|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Release|Any CPU.ActiveCfg = Release|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Release|x86.ActiveCfg = Release|x86
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,5 +180,6 @@ Global
 		{B751285C-78A9-4EF1-B447-D4F194E8EF8E} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{EBE7991F-5842-4D65-BADA-EBA755D4B478} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{C7AA8BF0-A3FD-44F3-B5F8-2A168D076011} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
+		{0905C6C1-1DA7-4B63-B392-727674D06C5A} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 	EndGlobalSection
 EndGlobal

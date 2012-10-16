@@ -20,35 +20,15 @@
  *    distribution.
  */
 
-using System;
-using System.Linq;
-using Gibbed.Unreflect.Core;
-
-namespace Test
+namespace DumpItems
 {
-    internal class Program
+    internal enum WeaponType
     {
-        private static void Main(string[] args)
-        {
-            new WillowDatamining.Dataminer().Run(args, Go);
-        }
-
-        private static void Go(Engine engine)
-        {
-            var willowHudClass = engine.GetClass("WillowGame.WillowHUD");
-            if (willowHudClass == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            dynamic willowHuds = engine.Objects.Where(o => o.IsA(willowHudClass) &&
-                                                           o.GetName().StartsWith("Default__") == false).ToArray();
-
-            foreach (var willowHud in willowHuds)
-            {
-                willowHud.bShowDebugInfo = true;
-                willowHud.bShowBuildInfo = true;
-            }
-        }
+        Pistol = 0,
+        Shotgun = 1,
+        SMG = 2,
+        SniperRifle = 3,
+        AssaultRifle = 4,
+        RocketLauncher = 5,
     }
 }
