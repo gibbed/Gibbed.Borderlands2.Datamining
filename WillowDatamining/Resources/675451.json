@@ -1,7 +1,7 @@
-/* version 1.1.0 */
+/* version 1.1.2 */
 {
-    "global_name_array_address": 26774084, /* 01988A44 */
-  "global_object_array_address": 27045408, /* 019CAE20 */
+    "global_name_array_address": 26782340, /* 0198AA84 */
+  "global_object_array_address": 27053664, /* 019CCE60 */
 
            "object_name_offset": 44, /* 2C */
           "object_outer_offset": 40, /* 28 */
