@@ -45,7 +45,6 @@ namespace DumpCustomizations
                 throw new InvalidOperationException();
             }
 
-            var downloadableCustomizationSetDefinitions = new List<dynamic>();
             using (var output = new StreamWriter("Customizations.json", false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
@@ -112,81 +111,16 @@ namespace DumpCustomizations
                         throw new NotSupportedException();
                     }
 
-                    /*
-                    // not useful
-                    string packageName = customizationDefinition.PackageName;
-                    if (string.IsNullOrEmpty(packageName) == false)
-                    {
-                        writer.WritePropertyName("package");
-                        writer.WriteValue(packageName);
-                    }
-                    */
-
-                    /*
-                    // not useful
-                    string customizationDataName = customizationDefinition.CustomizationDataName;
-                    if (string.IsNullOrEmpty(customizationDataName) == false)
-                    {
-                        writer.WritePropertyName("data_name");
-                        writer.WriteValue(customizationDataName);
-                    }
-                    */
-
                     var dlcCustomizationSet = customizationDefinition.DlcCustomizationSetDef;
                     if (dlcCustomizationSet != null)
                     {
-                        writer.WritePropertyName("dlc_set");
+                        writer.WritePropertyName("dlc");
                         writer.WriteValue(dlcCustomizationSet.GetPath());
-                        downloadableCustomizationSetDefinitions.Add(dlcCustomizationSet);
                     }
 
                     writer.WriteEndObject();
                 }
 
-                writer.WriteEndObject();
-
-                writer.Flush();
-            }
-
-            using (var output = new StreamWriter("Customization Sets.json", false, Encoding.Unicode))
-            using (var writer = new JsonTextWriter(output))
-            {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
-                writer.WriteStartObject();
-                foreach (dynamic downloadableCustomizationSetDefinition in downloadableCustomizationSetDefinitions.Distinct().OrderBy(o => o.GetPath()))
-                {
-                    writer.WritePropertyName(downloadableCustomizationSetDefinition.GetPath());
-                    writer.WriteStartObject();
-
-                    writer.WritePropertyName("id"); // content_id
-                    writer.WriteValue(downloadableCustomizationSetDefinition.ContentId);
-
-                    /*
-                    // not useful
-                    writer.WritePropertyName("license_mask");
-                    writer.WriteValue(downloadableCustomizationSetDefinition.LicenseMask);
-                    */
-
-                    writer.WritePropertyName("display_name"); // content_display_name
-                    writer.WriteValue(downloadableCustomizationSetDefinition.ContentDisplayName);
-
-                    /*
-                    // not useful
-                    writer.WritePropertyName("product_id");
-                    writer.WriteValue(downloadableCustomizationSetDefinition.ProductID);
-                    */
-
-                    /*
-                    // not useful
-                    writer.WritePropertyName("num_customizations");
-                    writer.WriteValue(downloadableCustomizationSetDefinition.NumCustomizations);
-                    */
-
-                    writer.WriteEndObject();
-                }
                 writer.WriteEndObject();
 
                 writer.Flush();
