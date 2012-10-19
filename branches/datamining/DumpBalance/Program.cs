@@ -80,10 +80,8 @@ namespace DumpBalance
                     var inventoryDefinition = balanceDefinition.InventoryDefinition;
                     if (inventoryDefinition != null)
                     {
-                        writer.WritePropertyName("types");
-                        writer.WriteStartArray();
+                        writer.WritePropertyName("type");
                         writer.WriteValue(inventoryDefinition.GetPath());
-                        writer.WriteEndArray();
                     }
 
                     var manufacturers = balanceDefinition.Manufacturers;
@@ -184,6 +182,13 @@ namespace DumpBalance
                         writer.WriteValue(baseDefinition.GetPath());
                     }
 
+                    var inventoryDefinition = balanceDefinition.InventoryDefinition;
+                    if (inventoryDefinition != null)
+                    {
+                        writer.WritePropertyName("type");
+                        writer.WriteValue(inventoryDefinition.GetPath());
+                    }
+
                     if (uclass == classModBalanceDefinitionClass &&
                         balanceDefinition.ClassModDefinitions.Length > 0)
                     {
@@ -196,17 +201,6 @@ namespace DumpBalance
                             writer.WriteValue(classModDefinition.GetPath());
                         }
                         writer.WriteEndArray();
-                    }
-                    else
-                    {
-                        var inventoryDefinition = balanceDefinition.InventoryDefinition;
-                        if (inventoryDefinition != null)
-                        {
-                            writer.WritePropertyName("types");
-                            writer.WriteStartArray();
-                            writer.WriteValue(inventoryDefinition.GetPath());
-                            writer.WriteEndArray();
-                        }
                     }
 
                     var manufacturers = balanceDefinition.Manufacturers;
