@@ -20,11 +20,15 @@
  *    distribution.
  */
 
-namespace DumpFastTravelStations
+namespace DumpTravelStations
 {
-    internal enum ObjectiveDependencyStatus
+    internal enum MissionStatus
     {
-        Complete = 0,
-	    Active = 1,
+        NotStarted = 0,
+        Active = 1,
+        RequiredObjectivesComplete = 2,
+        ReadyToTurnIn = 3,
+        Complete = 4,
+        Failed = 5,
     }
 }
