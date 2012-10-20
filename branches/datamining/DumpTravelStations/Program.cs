@@ -27,7 +27,7 @@ using System.Text;
 using Gibbed.Unreflect.Core;
 using Newtonsoft.Json;
 
-namespace DumpFastTravelStations
+namespace DumpTravelStations
 {
     internal class Program
     {
@@ -38,9 +38,17 @@ namespace DumpFastTravelStations
 
         private static void Go(Engine engine)
         {
+            var travelStationDefinitionClass = engine.GetClass("WillowGame.TravelStationDefinition");
             var fastTravelStationDefinitionClass = engine.GetClass("WillowGame.FastTravelStationDefinition");
+            var levelTravelStationDefinitionClass = engine.GetClass("WillowGame.LevelTravelStationDefinition");
+            if (travelStationDefinitionClass == null ||
+                fastTravelStationDefinitionClass == null ||
+                levelTravelStationDefinitionClass == null)
+            {
+                throw new System.InvalidOperationException();
+            }
 
-            using (var output = new StreamWriter("Fast Travel Stations.json", false, Encoding.Unicode))
+            using (var output = new StreamWriter("Travel Stations.json", false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -49,44 +57,59 @@ namespace DumpFastTravelStations
 
                 writer.WriteStartObject();
 
-                var fastTravelStationDefinitions = engine.Objects
-                    .Where(o => o.IsA(fastTravelStationDefinitionClass) &&
-                                o.GetName().StartsWith("Default__") ==
-                                false)
+                var travelStationDefinitions = engine.Objects
+                    .Where(o =>
+                           (o.IsA(travelStationDefinitionClass) == true ||
+                            o.IsA(fastTravelStationDefinitionClass) == true ||
+                            o.IsA(levelTravelStationDefinitionClass) == true) &&
+                           o.GetName().StartsWith("Default__") == false)
                     .OrderBy(o => o.GetPath());
-                foreach (dynamic fastTravelStationDefinition in fastTravelStationDefinitions)
+                foreach (dynamic travelStationDefinition in travelStationDefinitions)
                 {
-                    writer.WritePropertyName(fastTravelStationDefinition.GetPath());
+                    UnrealClass uclass = travelStationDefinition.GetClass();
+                    if (uclass.Path != "WillowGame.FastTravelStationDefinition" &&
+                        uclass.Path != "WillowGame.LevelTravelStationDefinition")
+                    {
+                        throw new System.InvalidOperationException();
+                    }
+
+                    writer.WritePropertyName(travelStationDefinition.GetPath());
                     writer.WriteStartObject();
 
-                    string stationLevelName = fastTravelStationDefinition.StationLevelName;
+                    if (uclass.Path != "WillowGame.TravelStationDefinition")
+                    {
+                        writer.WritePropertyName("$type");
+                        writer.WriteValue(uclass.Name);
+                    }
+
+                    string stationLevelName = travelStationDefinition.StationLevelName;
                     if (string.IsNullOrEmpty(stationLevelName) == false)
                     {
                         writer.WritePropertyName("level_name");
                         writer.WriteValue(stationLevelName);
                     }
 
-                    var dlcExpansion = fastTravelStationDefinition.DlcExpansion;
+                    var dlcExpansion = travelStationDefinition.DlcExpansion;
                     if (dlcExpansion != null)
                     {
                         writer.WritePropertyName("dlc_expansion");
                         writer.WriteValue(dlcExpansion.GetPath());
                     }
 
-                    if (fastTravelStationDefinition.PreviousStation != null)
+                    if (travelStationDefinition.PreviousStation != null)
                     {
                         writer.WritePropertyName("previous_station");
-                        writer.WriteValue(fastTravelStationDefinition.PreviousStation.GetPath());
+                        writer.WriteValue(travelStationDefinition.PreviousStation.GetPath());
                     }
 
-                    string stationDisplayName = fastTravelStationDefinition.StationDisplayName;
+                    string stationDisplayName = travelStationDefinition.StationDisplayName;
                     if (string.IsNullOrEmpty(stationDisplayName) == false)
                     {
                         writer.WritePropertyName("display_name");
                         writer.WriteValue(stationDisplayName);
                     }
 
-                    var missionDependencies = ((IEnumerable<dynamic>)fastTravelStationDefinition.MissionDependencies)
+                    var missionDependencies = ((IEnumerable<dynamic>)travelStationDefinition.MissionDependencies)
                         .Where(md => md.MissionDefinition != null)
                         .OrderBy(md => md.MissionDefinition.GetPath())
                         .ToArray();
@@ -127,39 +150,42 @@ namespace DumpFastTravelStations
                         writer.WriteEndArray();
                     }
 
-                    writer.WritePropertyName("initially_active");
-                    writer.WriteValue((bool)fastTravelStationDefinition.bInitiallyActive);
-
-                    writer.WritePropertyName("send_only");
-                    writer.WriteValue((bool)fastTravelStationDefinition.bSendOnly);
-
-                    string stationDescription = fastTravelStationDefinition.StationDescription;
-                    if (string.IsNullOrEmpty(stationDescription) == false &&
-                        stationDescription != "No Description" &&
-                        stationDescription != stationDisplayName)
+                    if (uclass == fastTravelStationDefinitionClass)
                     {
-                        writer.WritePropertyName("description");
-                        writer.WriteValue(stationDescription);
-                    }
+                        writer.WritePropertyName("initially_active");
+                        writer.WriteValue((bool)travelStationDefinition.bInitiallyActive);
 
-                    string stationSign = fastTravelStationDefinition.StationSign;
-                    if (string.IsNullOrEmpty(stationSign) == false &&
-                        stationSign != stationDisplayName)
-                    {
-                        writer.WritePropertyName("sign");
-                        writer.WriteValue(stationSign);
-                    }
+                        writer.WritePropertyName("send_only");
+                        writer.WriteValue((bool)travelStationDefinition.bSendOnly);
 
-                    if (fastTravelStationDefinition.InaccessibleObjective != null)
-                    {
-                        writer.WritePropertyName("inaccessible_objective");
-                        writer.WriteValue(fastTravelStationDefinition.InaccessibleObjective.GetPath());
-                    }
+                        string stationDescription = travelStationDefinition.StationDescription;
+                        if (string.IsNullOrEmpty(stationDescription) == false &&
+                            stationDescription != "No Description" &&
+                            stationDescription != stationDisplayName)
+                        {
+                            writer.WritePropertyName("description");
+                            writer.WriteValue(stationDescription);
+                        }
 
-                    if (fastTravelStationDefinition.AccessibleObjective != null)
-                    {
-                        writer.WritePropertyName("accessible_objective");
-                        writer.WriteValue(fastTravelStationDefinition.AccessibleObjective.GetPath());
+                        string stationSign = travelStationDefinition.StationSign;
+                        if (string.IsNullOrEmpty(stationSign) == false &&
+                            stationSign != stationDisplayName)
+                        {
+                            writer.WritePropertyName("sign");
+                            writer.WriteValue(stationSign);
+                        }
+
+                        if (travelStationDefinition.InaccessibleObjective != null)
+                        {
+                            writer.WritePropertyName("inaccessible_objective");
+                            writer.WriteValue(travelStationDefinition.InaccessibleObjective.GetPath());
+                        }
+
+                        if (travelStationDefinition.AccessibleObjective != null)
+                        {
+                            writer.WritePropertyName("accessible_objective");
+                            writer.WriteValue(travelStationDefinition.AccessibleObjective.GetPath());
+                        }
                     }
 
                     writer.WriteEndObject();
