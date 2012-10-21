@@ -82,6 +82,9 @@ namespace DumpTravelStations
                         writer.WriteValue(uclass.Name);
                     }
 
+                    writer.WritePropertyName("resource_name");
+                    writer.WriteValue(travelStationDefinition.GetName());
+
                     string stationLevelName = travelStationDefinition.StationLevelName;
                     if (string.IsNullOrEmpty(stationLevelName) == false)
                     {
