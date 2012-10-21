@@ -41,9 +41,12 @@ namespace DumpTravelStations
             var travelStationDefinitionClass = engine.GetClass("WillowGame.TravelStationDefinition");
             var fastTravelStationDefinitionClass = engine.GetClass("WillowGame.FastTravelStationDefinition");
             var levelTravelStationDefinitionClass = engine.GetClass("WillowGame.LevelTravelStationDefinition");
+            var fastTravelStationsListOrderClass = engine.GetClass("WillowGame.FastTravelStationsListOrder");
+
             if (travelStationDefinitionClass == null ||
                 fastTravelStationDefinitionClass == null ||
-                levelTravelStationDefinitionClass == null)
+                levelTravelStationDefinitionClass == null ||
+                fastTravelStationsListOrderClass == null)
             {
                 throw new System.InvalidOperationException();
             }
@@ -196,6 +199,46 @@ namespace DumpTravelStations
 
                 writer.WriteEndObject();
                 writer.Flush();
+            }
+
+            var fastTravelStationsListOrders = engine.Objects
+                .Where(o =>
+                       (o.IsA(fastTravelStationsListOrderClass) == true) &&
+                       o.GetName().StartsWith("Default__") == false)
+                .OrderBy(o => o.GetPath());
+            using (var output = new StreamWriter("Fast Travel Station Ordering.json", false, Encoding.Unicode))
+            using (var writer = new JsonTextWriter(output))
+            {
+                writer.Indentation = 2;
+                writer.IndentChar = ' ';
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartObject();
+
+                foreach (dynamic fastTravelStationsListOrder in fastTravelStationsListOrders)
+                {
+                    writer.WritePropertyName(fastTravelStationsListOrder.GetPath());
+                    writer.WriteStartObject();
+
+                    writer.WritePropertyName("stations");
+                    writer.WriteStartArray();
+                    foreach (var fastTravelStationDefinition in fastTravelStationsListOrder.FastTravelStationOrderList)
+                    {
+                        writer.WriteValue(fastTravelStationDefinition.GetPath());
+                    }
+                    writer.WriteEndArray();
+
+                    var dlcExpansion = fastTravelStationsListOrder.DlcExpansion;
+                    if (dlcExpansion != null)
+                    {
+                        writer.WritePropertyName("dlc_expansion");
+                        writer.WriteValue(dlcExpansion.GetPath());
+                    }
+
+                    writer.WriteEndObject();
+                }
+
+                writer.WriteEndObject();
             }
         }
     }
