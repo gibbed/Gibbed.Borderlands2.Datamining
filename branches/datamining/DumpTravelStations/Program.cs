@@ -111,7 +111,7 @@ namespace DumpTravelStations
                     string stationDisplayName = travelStationDefinition.StationDisplayName;
                     if (string.IsNullOrEmpty(stationDisplayName) == false)
                     {
-                        writer.WritePropertyName("display_name");
+                        writer.WritePropertyName("station_display_name");
                         writer.WriteValue(stationDisplayName);
                     }
 
@@ -191,6 +191,23 @@ namespace DumpTravelStations
                         {
                             writer.WritePropertyName("accessible_objective");
                             writer.WriteValue(travelStationDefinition.AccessibleObjective.GetPath());
+                        }
+                    }
+                    else if (uclass == levelTravelStationDefinitionClass)
+                    {
+                        if (travelStationDefinition.DestinationStationDefinition != null)
+                        {
+                            writer.WritePropertyName("destination_station");
+                            writer.WriteValue(travelStationDefinition.DestinationStationDefinition.GetPath());
+                        }
+
+                        string displayName = travelStationDefinition.DisplayName;
+                        if (string.IsNullOrEmpty(displayName) == false &&
+                            displayName != "No Description" &&
+                            displayName != stationDisplayName)
+                        {
+                            writer.WritePropertyName("display_name");
+                            writer.WriteValue(displayName);
                         }
                     }
 
