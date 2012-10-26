@@ -47,7 +47,9 @@ namespace DumpDownloadableContentManager
                 throw new InvalidOperationException();
             }
 
-            using (var output = new StreamWriter("Downloadable Contents.json", false, Encoding.Unicode))
+            Directory.CreateDirectory("dumps");
+
+            using (var output = new StreamWriter(Path.Combine("dumps", "Downloadable Contents.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -110,7 +112,7 @@ namespace DumpDownloadableContentManager
                 writer.Flush();
             }
 
-            using (var output = new StreamWriter("Downloadable Packages.json", false, Encoding.Unicode))
+            using (var output = new StreamWriter(Path.Combine("dumps", "Downloadable Packages.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

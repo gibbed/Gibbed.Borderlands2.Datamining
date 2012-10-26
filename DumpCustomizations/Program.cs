@@ -45,7 +45,9 @@ namespace DumpCustomizations
                 throw new InvalidOperationException();
             }
 
-            using (var output = new StreamWriter("Customizations.json", false, Encoding.Unicode))
+            Directory.CreateDirectory("dumps");
+
+            using (var output = new StreamWriter(Path.Combine("dumps", "Customizations.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

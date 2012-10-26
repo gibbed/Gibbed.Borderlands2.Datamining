@@ -86,7 +86,9 @@ namespace DumpItems
                 }
             }
 
-            using (var output = new StreamWriter("Weapon Types.json", false, Encoding.Unicode))
+            Directory.CreateDirectory("dumps");
+
+            using (var output = new StreamWriter(Path.Combine("dumps", "Weapon Types.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -206,7 +208,7 @@ namespace DumpItems
                 }
             }
 
-            using (var output = new StreamWriter("Item Types.json", false, Encoding.Unicode))
+            using (var output = new StreamWriter(Path.Combine("dumps", "Item Types.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
