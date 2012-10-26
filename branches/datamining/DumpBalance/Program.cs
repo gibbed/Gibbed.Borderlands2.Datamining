@@ -53,7 +53,9 @@ namespace DumpBalance
                 throw new InvalidOperationException();
             }
 
-            using (var output = new StreamWriter("Weapon Balance.json", false, Encoding.Unicode))
+            Directory.CreateDirectory("dumps");
+
+            using (var output = new StreamWriter(Path.Combine("dumps", "Weapon Balance.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -147,7 +149,7 @@ namespace DumpBalance
                 writer.WriteEndObject();
             }
 
-            using (var output = new StreamWriter("Item Balance.json", false, Encoding.Unicode))
+            using (var output = new StreamWriter(Path.Combine("dumps", "Item Balance.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

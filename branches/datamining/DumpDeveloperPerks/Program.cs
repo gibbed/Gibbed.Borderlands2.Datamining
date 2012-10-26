@@ -51,7 +51,9 @@ namespace DumpDeveloperPerks
                 throw new InvalidOperationException();
             }
 
-            using (var output = new StreamWriter("Developer Perks.json", false, Encoding.Unicode))
+            Directory.CreateDirectory("dumps");
+
+            using (var output = new StreamWriter(Path.Combine("dumps", "Developer Perks.json"), false, Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
