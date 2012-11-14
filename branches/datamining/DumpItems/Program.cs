@@ -228,7 +228,8 @@ namespace DumpItems
                         itemPartClass.Path != "WillowGame.UsableCustomizationItemDefinition" &&
                         itemPartClass.Path != "WillowGame.ClassModDefinition" &&
                         itemPartClass.Path != "WillowGame.GrenadeModDefinition" &&
-                        itemPartClass.Path != "WillowGame.ShieldDefinition")
+                        itemPartClass.Path != "WillowGame.ShieldDefinition" &&
+                        itemPartClass.Path != "WillowGame.MissionItemDefinition")
                     {
                         throw new InvalidOperationException();
                     }
@@ -313,24 +314,13 @@ namespace DumpItems
 
         private static Dictionary<string, string> _ItemTypeMapping = new Dictionary<string, string>()
         {
-            {
-                "WillowGame.ArtifactDefinition", "Artifact"
-                },
-            {
-                "WillowGame.ClassModDefinition", "ClassMod"
-                },
-            {
-                "WillowGame.GrenadeModDefinition", "GrenadeMod"
-                },
-            {
-                "WillowGame.ShieldDefinition", "Shield"
-                },
-            {
-                "WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem"
-                },
-            {
-                "WillowGame.UsableItemDefinition", "UsableItem"
-                },
+            {"WillowGame.ArtifactDefinition", "Artifact"},
+            {"WillowGame.ClassModDefinition", "ClassMod"},
+            {"WillowGame.GrenadeModDefinition", "GrenadeMod"},
+            {"WillowGame.MissionItemDefinition", "MissionItem"},
+            {"WillowGame.ShieldDefinition", "Shield"},
+            {"WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem"},
+            {"WillowGame.UsableItemDefinition", "UsableItem"},
         };
     }
 }
