@@ -82,6 +82,12 @@ namespace DumpMissions
                         writer.WriteValue(missionDescription);
                     }
 
+                    writer.WritePropertyName("is_plot_critical");
+                    writer.WriteValue(missionDefinition.bPlotCritical);
+
+                    writer.WritePropertyName("can_be_failed");
+                    writer.WriteValue(missionDefinition.bCanBeFailed);
+
                     // TODO: objective info
 
                     writer.WriteEndObject();
