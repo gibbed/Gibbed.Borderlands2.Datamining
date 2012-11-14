@@ -58,11 +58,13 @@
     <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\660065.json" />
     <None Include="Resources\660067.json" />
     <None Include="Resources\670948.json" />
     <None Include="Resources\673028.json" />
     <None Include="Resources\675451.json" />
     <None Include="Resources\680604.json" />
+    <None Include="Resources\687913.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
