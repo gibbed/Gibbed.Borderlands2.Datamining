@@ -131,40 +131,21 @@ namespace DumpCustomizations
 
         private static readonly Dictionary<string, string> _TypeMapping = new Dictionary<string, string>()
         {
-            {
-                "WillowGame.CustomizationType_Head", "Head"
-                },
-            {
-                "WillowGame.CustomizationType_Skin", "Skin"
-                },
+            {"WillowGame.CustomizationType_Head", "Head"},
+            {"WillowGame.CustomizationType_Skin", "Skin"},
         };
 
         private static readonly Dictionary<string, string> _UsageFlagMapping = new Dictionary<string, string>()
         {
-            {
-                "WillowGame.CustomizationUsage_Assassin", "Assassin"
-                },
-            {
-                "WillowGame.CustomizationUsage_Mercenary", "Mercenary"
-                },
-            {
-                "WillowGame.CustomizationUsage_Soldier", "Soldier"
-                },
-            {
-                "WillowGame.CustomizationUsage_Siren", "Siren"
-                },
-            {
-                "WillowGame.CustomizationUsage_ExtraPlayerA", "Mechromancer"
-                },
-            {
-                "WillowGame.CustomizationUsage_Runner", "Runner"
-                },
-            {
-                "WillowGame.CustomizationUsage_BanditTech", "BanditTech"
-                },
-            {
-                "WillowGame.CustomizationUsage_Hovercraft", "Hovercraft"
-                },
+            {"WillowGame.CustomizationUsage_Assassin", "Assassin"},
+            {"WillowGame.CustomizationUsage_Mercenary", "Mercenary"},
+            {"WillowGame.CustomizationUsage_Soldier", "Soldier"},
+            {"WillowGame.CustomizationUsage_Siren", "Siren"},
+            {"WillowGame.CustomizationUsage_ExtraPlayerA", "Mechromancer"},
+            {"WillowGame.CustomizationUsage_Runner", "Runner"},
+            {"WillowGame.CustomizationUsage_BanditTech", "BanditTech"},
+            {"WillowGame.CustomizationUsage_Hovercraft", "Hovercraft"},
+            {"WillowGame.CustomizationUsage_FanBoat", "FanBoat"},
         };
     }
 }
