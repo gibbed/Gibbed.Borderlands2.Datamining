@@ -35,53 +35,19 @@ namespace Test
 
         private static void Go(Engine engine)
         {
-            /*
-            var globalsDefinitionClass = engine.GetClass("WillowGame.GlobalsDefinition");
-            var willowGlobalsClass = engine.GetClass("WillowGame.WillowGlobals");
-            if (globalsDefinitionClass == null ||
-                willowGlobalsClass == null)
+            var willowHudClass = engine.GetClass("WillowGame.WillowHUD");
+            if (willowHudClass == null)
             {
                 throw new InvalidOperationException();
             }
 
-            var globalsDefinitions = engine.Objects
-                    .Where(o => o.IsA(globalsDefinitionClass) &&
-                                o.GetName().StartsWith("Default__") ==
-                                false)
-                    .OrderBy(o => o.GetPath())
-                    .ToArray();
-            
-            dynamic globalsDefinition = globalsDefinitions.FirstOrDefault();
+            dynamic willowHuds = engine.Objects.Where(o => o.IsA(willowHudClass) &&
+                                                           o.GetName().StartsWith("Default__") == false).ToArray();
 
-            var willowGlobals = engine.Objects
-                    .Where(o => o.IsA(willowGlobalsClass) &&
-                                o.GetName().StartsWith("Default__") ==
-                                false)
-                    .OrderBy(o => o.GetPath())
-                    .ToArray();
-
-            dynamic willowGlobal = willowGlobals.FirstOrDefault();
-
-            dynamic[] butt = willowGlobal.KnownCurrencies;
-
-            var generalSkillPointsPerLevelUp = globalsDefinition.GeneralSkillPointsPerLevelUp;
-            var generalSkillPointsTotalForCurrentLevel = globalsDefinition.GeneralSkillPointsTotalForCurrentLevel;
-            var specialistSkillPointsPerLevelUp = globalsDefinition.SpecialistSkillPointsPerLevelUp;
-            var costToResetSkillPoints = globalsDefinition.CostToResetSkillPoints;
-            var rarityLevelColors = globalsDefinition.RarityLevelColors;
-            */
-
-            var customizationDefinitionClass = engine.GetClass("WillowGame.CustomizationDefinition");
-            var customizationDefinitions = engine.Objects
-                .Where(o => o.IsA(customizationDefinitionClass) &&
-                            o.GetName().StartsWith("Default__") ==
-                            false)
-                .OrderBy(o => o.GetPath())
-                .ToArray();
-
-            foreach (dynamic customizationDefinition in customizationDefinitions)
+            foreach (var willowHud in willowHuds)
             {
-                customizationDefinition.DlcCustomizationSetDef = null;
+                willowHud.bShowDebugInfo = true;
+                willowHud.bShowBuildInfo = true;
             }
         }
     }
