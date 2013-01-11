@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpPlayerClasses", "DumpPl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpDownloadableContentManager", "DumpDownloadableContentManager\DumpDownloadableContentManager.csproj", "{AA5C95BC-8A63-4B74-8677-A433268E0FB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpCurrencies", "DumpCurrencies\DumpCurrencies.csproj", "{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -202,6 +204,16 @@ Global
 		{AA5C95BC-8A63-4B74-8677-A433268E0FB6}.Release|Mixed Platforms.Build.0 = Release|x86
 		{AA5C95BC-8A63-4B74-8677-A433268E0FB6}.Release|x86.ActiveCfg = Release|x86
 		{AA5C95BC-8A63-4B74-8677-A433268E0FB6}.Release|x86.Build.0 = Release|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Debug|x86.ActiveCfg = Debug|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Debug|x86.Build.0 = Debug|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Release|Any CPU.ActiveCfg = Release|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Release|x86.ActiveCfg = Release|x86
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,5 +232,6 @@ Global
 		{6C62D227-5D43-470A-BA84-C36C11248D95} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{A79AE0F5-41CF-4AF9-81EA-A06E8A707B2F} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 		{AA5C95BC-8A63-4B74-8677-A433268E0FB6} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
+		{A8796B47-7BE5-48FB-A8C6-97ABD3022ECB} = {AC56FF96-28E0-49D4-9869-F1159D0FCF32}
 	EndGlobalSection
 EndGlobal
