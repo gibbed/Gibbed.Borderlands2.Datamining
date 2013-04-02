@@ -83,7 +83,8 @@ namespace DumpDownloadableContentManager
                         uclass.Path != "WillowGame.DownloadableCustomizationSetDefinition" &&
                         uclass.Path != "WillowGame.DownloadableItemSetDefinition" &&
                         uclass.Path != "WillowGame.DownloadableVehicleDefinition" &&
-                        uclass.Path != "WillowGame.DownloadableCharacterDefinition")
+                        uclass.Path != "WillowGame.DownloadableCharacterDefinition" &&
+                        uclass.Path != "WillowGame.DownloadableBalanceModifierDefinition")
                     {
                         throw new NotSupportedException();
                     }
@@ -150,21 +151,12 @@ namespace DumpDownloadableContentManager
 
         private static readonly Dictionary<string, string> _ContentTypeMapping = new Dictionary<string, string>()
         {
-            {
-                "WillowGame.DownloadableExpansionDefinition", "Expansion"
-                },
-            {
-                "WillowGame.DownloadableCustomizationSetDefinition", "CustomizationSet"
-                },
-            {
-                "WillowGame.DownloadableItemSetDefinition", "ItemSet"
-                },
-            {
-                "WillowGame.DownloadableVehicleDefinition", "Vehicle"
-                },
-            {
-                "WillowGame.DownloadableCharacterDefinition", "Character"
-                },
+            {"WillowGame.DownloadableExpansionDefinition", "Expansion"},
+            {"WillowGame.DownloadableCustomizationSetDefinition", "CustomizationSet"},
+            {"WillowGame.DownloadableItemSetDefinition", "ItemSet"},
+            {"WillowGame.DownloadableVehicleDefinition", "Vehicle"},
+            {"WillowGame.DownloadableCharacterDefinition", "Character"},
+            {"WillowGame.DownloadableBalanceModifierDefinition", "BalanceModifier"},
         };
     }
 }

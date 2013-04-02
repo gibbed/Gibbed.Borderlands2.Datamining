@@ -112,8 +112,11 @@ namespace DumpAssetLibraryManager
                         writer.WritePropertyName(desc.Replace(" ", ""));
                         writer.WriteStartObject();
 
-                        writer.WritePropertyName("type");
-                        writer.WriteValue(((UnrealClass)library.LibraryType).Path);
+                        if (library.LibraryType != null)
+                        {
+                            writer.WritePropertyName("type");
+                            writer.WriteValue(((UnrealClass)library.LibraryType).Path);
+                        }
 
                         writer.WritePropertyName("sublibraries");
                         writer.WriteStartArray();
