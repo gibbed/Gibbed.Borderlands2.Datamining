@@ -142,6 +142,7 @@ namespace DumpCustomizations
             {"WillowGame.CustomizationUsage_Soldier", "Soldier"},
             {"WillowGame.CustomizationUsage_Siren", "Siren"},
             {"WillowGame.CustomizationUsage_ExtraPlayerA", "Mechromancer"},
+            {"WillowGame.CustomizationUsage_ExtraPlayerB", "Psycho"},
             {"WillowGame.CustomizationUsage_Runner", "Runner"},
             {"WillowGame.CustomizationUsage_BanditTech", "BanditTech"},
             {"WillowGame.CustomizationUsage_Hovercraft", "Hovercraft"},
