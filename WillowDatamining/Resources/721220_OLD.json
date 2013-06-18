@@ -1,8 +1,7 @@
 /* version 1.5.0 */
-/* they pushed a new build without bumping the version number :-( */
 {
-    "global_name_array_address": 35803556, /* 022251A4 */
-  "global_object_array_address": 36081032, /* 02268D88 */
+    "global_name_array_address": 35807524, /* 02226124 */
+  "global_object_array_address": 36085000, /* 02269D08 */
 
            "object_name_offset": 44, /* 2C */
           "object_outer_offset": 40, /* 28 */
