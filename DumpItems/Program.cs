@@ -229,7 +229,8 @@ namespace DumpItems
                         itemPartClass.Path != "WillowGame.ClassModDefinition" &&
                         itemPartClass.Path != "WillowGame.GrenadeModDefinition" &&
                         itemPartClass.Path != "WillowGame.ShieldDefinition" &&
-                        itemPartClass.Path != "WillowGame.MissionItemDefinition")
+                        itemPartClass.Path != "WillowGame.MissionItemDefinition" &&
+                        itemPartClass.Path != "WillowGame.CrossDLCClassModDefinition")
                     {
                         throw new InvalidOperationException();
                     }
@@ -321,6 +322,7 @@ namespace DumpItems
             {"WillowGame.ShieldDefinition", "Shield"},
             {"WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem"},
             {"WillowGame.UsableItemDefinition", "UsableItem"},
+            {"WillowGame.CrossDLCClassModDefinition", "CrossDLCClassMod"},
         };
     }
 }
