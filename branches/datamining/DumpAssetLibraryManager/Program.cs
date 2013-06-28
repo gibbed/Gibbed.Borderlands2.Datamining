@@ -60,7 +60,10 @@ namespace DumpAssetLibraryManager
 
             Directory.CreateDirectory("dumps");
 
-            using (var output = new StreamWriter(Path.Combine("dumps", "Asset Library Manager.json"), false, Encoding.Unicode))
+            using (
+                var output = new StreamWriter(Path.Combine("dumps", "Asset Library Manager.json"),
+                                              false,
+                                              Encoding.Unicode))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -94,7 +97,9 @@ namespace DumpAssetLibraryManager
 
                 writer.WritePropertyName("sets");
                 writer.WriteStartArray();
-                foreach (dynamic assetLibrarySet in assLibMan.RuntimeAssetLibraries)
+                foreach (
+                    dynamic assetLibrarySet in
+                        ((IEnumerable<dynamic>)assLibMan.RuntimeAssetLibraries).OrderBy(ral => ral.Id))
                 {
                     writer.WriteStartObject();
 
