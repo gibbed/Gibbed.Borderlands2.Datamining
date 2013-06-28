@@ -223,6 +223,11 @@ namespace DumpItems
                     writer.WriteStartObject();
 
                     UnrealClass itemPartClass = itemType.GetClass();
+                    if (itemPartClass.Path == "WillowGame.WeaponTypeDefinition")
+                    {
+                        continue;
+                    }
+
                     if (itemPartClass.Path != "WillowGame.UsableItemDefinition" &&
                         itemPartClass.Path != "WillowGame.ArtifactDefinition" &&
                         itemPartClass.Path != "WillowGame.UsableCustomizationItemDefinition" &&
@@ -239,6 +244,15 @@ namespace DumpItems
                     {
                         writer.WritePropertyName("name");
                         writer.WriteValue(itemType.ItemName);
+                    }
+                    else if (itemPartClass.Path == "WillowGame.UsableCustomizationItemDefinition")
+                    {
+                        var customizationDef = itemType.CustomizationDef;
+                        if (string.IsNullOrEmpty((string)customizationDef.CustomizationName) == false)
+                        {
+                            writer.WritePropertyName("name");
+                            writer.WriteValue(customizationDef.CustomizationName);
+                        }
                     }
 
                     writer.WritePropertyName("type");
