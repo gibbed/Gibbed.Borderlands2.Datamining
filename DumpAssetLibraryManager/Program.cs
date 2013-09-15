@@ -32,6 +32,12 @@ namespace DumpAssetLibraryManager
 {
     internal class Program
     {
+        private static readonly string[] _Blacklist = new[]
+        {
+            "GD_Weap_Scorpio.PackageAssetSublibrary_0",
+            "GD_Weap_Scorpio.PackageAssetSublibrary_275",
+        };
+
         private static void Main(string[] args)
         {
             new WillowDatamining.Dataminer().Run(args, Go);
@@ -136,8 +142,10 @@ namespace DumpAssetLibraryManager
                         {
                             writer.WriteStartObject();
 
+                            var description = (string)library.Sublibraries[sublibraryIndex];
+
                             writer.WritePropertyName("description");
-                            writer.WriteValue(library.Sublibraries[sublibraryIndex]);
+                            writer.WriteValue(description);
 
                             if (sublibrary != null)
                             {
@@ -148,7 +156,8 @@ namespace DumpAssetLibraryManager
                             writer.WritePropertyName("assets");
                             writer.WriteStartArray();
 
-                            if (sublibrary != null)
+                            if (sublibrary != null &&
+                                _Blacklist.Contains(description) == false)
                             {
                                 var assets = sublibrary.Assets;
                                 if (assets.Length != 0)
