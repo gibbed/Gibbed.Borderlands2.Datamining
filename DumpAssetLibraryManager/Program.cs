@@ -32,7 +32,7 @@ namespace DumpAssetLibraryManager
 {
     internal class Program
     {
-        private static readonly string[] _Blacklist = new[]
+        private static readonly string[] _Blacklist =
         {
             "GD_Weap_Scorpio.PackageAssetSublibrary_0",
             "GD_Weap_Scorpio.PackageAssetSublibrary_275",

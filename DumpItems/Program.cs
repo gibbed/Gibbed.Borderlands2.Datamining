@@ -55,9 +55,10 @@ namespace DumpItems
 
             var weaponTypes = new List<dynamic>();
             {
-                var balanceDefinitions = engine.Objects.Where(o => o.IsA(weaponBalanceDefinitionClass) &&
-                                                                   o.GetName().StartsWith("Default__") == false)
-                    .OrderBy(o => o.GetPath());
+                var balanceDefinitions = engine.Objects
+                                               .Where(o => o.IsA(weaponBalanceDefinitionClass) &&
+                                                           o.GetName().StartsWith("Default__") == false)
+                                               .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
                     if (balanceDefinition.PartListCollection != null)
@@ -103,7 +104,8 @@ namespace DumpItems
                     writer.WriteStartObject();
 
                     UnrealClass weaponPartClass = weaponType.GetClass();
-                    if (weaponPartClass.Path != "WillowGame.WeaponTypeDefinition")
+                    if (weaponPartClass.Path != "WillowGame.WeaponTypeDefinition" &&
+                        weaponPartClass.Path != "WillowGame.BuzzaxeWeaponTypeDefinition")
                     {
                         throw new InvalidOperationException();
                     }
@@ -164,15 +166,17 @@ namespace DumpItems
             {
                 var balanceDefinitions = engine.Objects.Where(
                     o =>
-                    (o.IsA(inventoryBalanceDefinitionClass) || o.IsA(itemBalanceDefinitionClass) ||
+                    (o.IsA(inventoryBalanceDefinitionClass) ||
+                     o.IsA(itemBalanceDefinitionClass) ||
                      o.IsA(classModBalanceDefinitionClass)) &&
                     o.GetName().StartsWith("Default__") == false)
-                    .OrderBy(o => o.GetPath());
+                                               .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
                     var uclass = balanceDefinition.GetClass();
 
                     if (uclass != inventoryBalanceDefinitionClass &&
+                        uclass != itemBalanceDefinitionClass &&
                         uclass != classModBalanceDefinitionClass)
                     {
                         throw new NotSupportedException();
@@ -329,14 +333,14 @@ namespace DumpItems
 
         private static Dictionary<string, string> _ItemTypeMapping = new Dictionary<string, string>()
         {
-            {"WillowGame.ArtifactDefinition", "Artifact"},
-            {"WillowGame.ClassModDefinition", "ClassMod"},
-            {"WillowGame.GrenadeModDefinition", "GrenadeMod"},
-            {"WillowGame.MissionItemDefinition", "MissionItem"},
-            {"WillowGame.ShieldDefinition", "Shield"},
-            {"WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem"},
-            {"WillowGame.UsableItemDefinition", "UsableItem"},
-            {"WillowGame.CrossDLCClassModDefinition", "CrossDLCClassMod"},
+            { "WillowGame.ArtifactDefinition", "Artifact" },
+            { "WillowGame.ClassModDefinition", "ClassMod" },
+            { "WillowGame.GrenadeModDefinition", "GrenadeMod" },
+            { "WillowGame.MissionItemDefinition", "MissionItem" },
+            { "WillowGame.ShieldDefinition", "Shield" },
+            { "WillowGame.UsableCustomizationItemDefinition", "UsableCustomizationItem" },
+            { "WillowGame.UsableItemDefinition", "UsableItem" },
+            { "WillowGame.CrossDLCClassModDefinition", "CrossDLCClassMod" },
         };
     }
 }
