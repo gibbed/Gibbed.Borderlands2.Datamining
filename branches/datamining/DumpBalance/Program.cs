@@ -64,9 +64,10 @@ namespace DumpBalance
 
                 writer.WriteStartObject();
 
-                var balanceDefinitions = engine.Objects.Where(o => o.IsA(weaponBalanceDefinitionClass) &&
-                                                                   o.GetName().StartsWith("Default__") == false)
-                    .OrderBy(o => o.GetPath());
+                var balanceDefinitions = engine.Objects
+                                               .Where(o => o.IsA(weaponBalanceDefinitionClass) &&
+                                                           o.GetName().StartsWith("Default__") == false)
+                                               .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
                     writer.WritePropertyName(balanceDefinition.GetPath());
@@ -93,10 +94,9 @@ namespace DumpBalance
                         writer.WritePropertyName("manufacturers");
                         writer.WriteStartArray();
 
-                        foreach (
-                            var manufacturer in
-                                ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null).OrderBy(
-                                    imbd => imbd.Manufacturer.GetPath()))
+                        foreach (var manufacturer in
+                            ((IEnumerable<dynamic>)manufacturers).Where(imbd => imbd.Manufacturer != null)
+                                                                 .OrderBy(imbd => imbd.Manufacturer.GetPath()))
                         {
                             writer.WriteValue(manufacturer.Manufacturer.GetPath());
                         }
@@ -160,15 +160,17 @@ namespace DumpBalance
 
                 var balanceDefinitions = engine.Objects.Where(
                     o =>
-                    (o.IsA(inventoryBalanceDefinitionClass) || o.IsA(itemBalanceDefinitionClass) ||
+                    (o.IsA(inventoryBalanceDefinitionClass) ||
+                     o.IsA(itemBalanceDefinitionClass) ||
                      o.IsA(classModBalanceDefinitionClass)) &&
                     o.GetName().StartsWith("Default__") == false)
-                    .OrderBy(o => o.GetPath());
+                                               .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
                     var uclass = balanceDefinition.GetClass();
 
                     if (uclass != inventoryBalanceDefinitionClass &&
+                        uclass != itemBalanceDefinitionClass &&
                         uclass != classModBalanceDefinitionClass)
                     {
                         throw new NotSupportedException();
