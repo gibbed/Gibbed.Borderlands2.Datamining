@@ -73,6 +73,7 @@
     <None Include="Resources\744907.json" />
     <None Include="Resources\745141.json" />
     <None Include="Resources\751067.json" />
+    <None Include="Resources\770068.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

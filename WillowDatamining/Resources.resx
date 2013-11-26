@@ -163,4 +163,7 @@
   <data name="751067" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\751067.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="770068" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\770068.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>
