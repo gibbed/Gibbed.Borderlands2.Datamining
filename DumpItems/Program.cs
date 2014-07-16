@@ -259,6 +259,12 @@ namespace DumpItems
                         }
                     }
 
+                    if ((bool)itemType.bItemNameIsFullName == true)
+                    {
+                        writer.WritePropertyName("has_full_name");
+                        writer.WriteValue(itemType.bItemNameIsFullName);
+                    }
+
                     writer.WritePropertyName("type");
                     writer.WriteValue(_ItemTypeMapping[itemPartClass.Path]);
 
