@@ -53,7 +53,10 @@ namespace DumpDeveloperPerks
 
             Directory.CreateDirectory("dumps");
 
-            using (var output = new StreamWriter(Path.Combine("dumps", "Developer Perks.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Developer Perks.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

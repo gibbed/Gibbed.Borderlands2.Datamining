@@ -53,7 +53,10 @@ namespace DumpTravelStations
 
             Directory.CreateDirectory("dumps");
             
-            using (var output = new StreamWriter(Path.Combine("dumps", "Travel Stations.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Travel Stations.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -225,7 +228,10 @@ namespace DumpTravelStations
                        (o.IsA(fastTravelStationsListOrderClass) == true) &&
                        o.GetName().StartsWith("Default__") == false)
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(Path.Combine("dumps", "Fast Travel Station Ordering.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Fast Travel Station Ordering.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

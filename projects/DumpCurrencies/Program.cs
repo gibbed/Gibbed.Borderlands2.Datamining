@@ -50,7 +50,10 @@ namespace DumpCurrencies
                 .OrderBy(o => o.GetPath());
             Directory.CreateDirectory("dumps");
 
-            using (var output = new StreamWriter(Path.Combine("dumps", "Currencies.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Currencies.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;

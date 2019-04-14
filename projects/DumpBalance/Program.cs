@@ -55,7 +55,10 @@ namespace DumpBalance
 
             Directory.CreateDirectory("dumps");
 
-            using (var output = new StreamWriter(Path.Combine("dumps", "Weapon Balance.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Weapon Balance.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
@@ -149,7 +152,10 @@ namespace DumpBalance
                 writer.WriteEndObject();
             }
 
-            using (var output = new StreamWriter(Path.Combine("dumps", "Item Balance.json"), false, Encoding.Unicode))
+            using (var output = new StreamWriter(
+                Path.Combine("dumps", "Item Balance.json"),
+                false,
+                Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {
                 writer.Indentation = 2;
