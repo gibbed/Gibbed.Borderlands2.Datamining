@@ -62,9 +62,9 @@
       <Project>{78358FEB-E627-490E-8701-3C5DBE2D72FA}</Project>
       <Name>Gibbed.Unreflect.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WillowDatamining\WillowDatamining.csproj">
+    <ProjectReference Include="..\Borderlands2Datamining\Borderlands2Datamining.csproj">
       <Project>{3E2F2EC6-F71F-4F39-9A29-2CF32F650BE3}</Project>
-      <Name>WillowDatamining</Name>
+      <Name>Borderlands2Datamining</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

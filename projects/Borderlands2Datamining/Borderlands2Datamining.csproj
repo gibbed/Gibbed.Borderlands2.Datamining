@@ -8,8 +8,8 @@
     <ProjectGuid>{3E2F2EC6-F71F-4F39-9A29-2CF32F650BE3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WillowDatamining</RootNamespace>
-    <AssemblyName>WillowDatamining</AssemblyName>
+    <RootNamespace>Borderlands2Datamining</RootNamespace>
+    <AssemblyName>Borderlands2Datamining</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

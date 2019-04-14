@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("WillowDatamining")]
+[assembly: AssemblyTitle("Borderlands2Datamining")]
 [assembly: AssemblyDescription("http://gib.me/")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WillowDatamining")]
+[assembly: AssemblyProduct("Borderlands2Datamining")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

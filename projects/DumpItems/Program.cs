@@ -34,7 +34,7 @@ namespace DumpItems
     {
         private static void Main(string[] args)
         {
-            new WillowDatamining.Dataminer().Run(args, Go);
+            new Borderlands2Datamining.Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)

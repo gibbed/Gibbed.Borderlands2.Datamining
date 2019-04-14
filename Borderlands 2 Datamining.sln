@@ -24,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpCustomizations", "proje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpItems", "projects\DumpItems\DumpItems.csproj", "{19FA4343-9909-4885-832F-2D2875F54264}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WillowDatamining", "projects\WillowDatamining\WillowDatamining.csproj", "{3E2F2EC6-F71F-4F39-9A29-2CF32F650BE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borderlands2Datamining", "projects\Borderlands2Datamining\Borderlands2Datamining.csproj", "{3E2F2EC6-F71F-4F39-9A29-2CF32F650BE3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchVaultHunterRelic", "projects\PatchVaultHunterRelic\PatchVaultHunterRelic.csproj", "{B751285C-78A9-4EF1-B447-D4F194E8EF8E}"
 EndProject

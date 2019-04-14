@@ -26,7 +26,7 @@ using System.Linq;
 using Gibbed.Unreflect.Core;
 using Gibbed.Unreflect.Runtime;
 
-namespace WillowDatamining
+namespace Borderlands2Datamining
 {
     public class Dataminer
     {
