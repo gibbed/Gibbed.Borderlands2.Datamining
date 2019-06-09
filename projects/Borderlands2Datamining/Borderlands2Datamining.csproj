@@ -11,27 +11,6 @@
     <ProjectReference Include="..\Unreflect\Gibbed.Unreflect.Runtime\Gibbed.Unreflect.Runtime.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\1055911.json" />
-    <None Include="Resources\660065.json" />
-    <None Include="Resources\660067.json" />
-    <None Include="Resources\670948.json" />
-    <None Include="Resources\673028.json" />
-    <None Include="Resources\675451.json" />
-    <None Include="Resources\680604.json" />
-    <None Include="Resources\687913.json" />
-    <None Include="Resources\689399.json" />
-    <None Include="Resources\691788.json" />
-    <None Include="Resources\697606.json" />
-    <None Include="Resources\711033.json" />
-    <None Include="Resources\721220.json" />
-    <None Include="Resources\744907.json" />
-    <None Include="Resources\745141.json" />
-    <None Include="Resources\751067.json" />
-    <None Include="Resources\770068.json" />
-    <None Include="Resources\795072.json" />
-    <None Include="Resources\827556.json" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
   <ItemGroup>

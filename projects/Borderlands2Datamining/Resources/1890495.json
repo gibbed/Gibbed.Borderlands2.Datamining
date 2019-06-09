@@ -1,0 +1,20 @@
+{
+  "base_address": 4194304, /* 0x400000 */
+  "global_name_array_address": 27132420, /* 0x19E0204 */
+  "global_object_array_address": 27403744, /* 0x1A225E0 */
+  "name_entry_string_offset": 16, /* 0x10 */
+  "offsets": {
+    "Core.Object:Outer": 40, /* 0x28 */
+    "Core.Object:Name": 44, /* 0x2C */
+    "Core.Object:Class": 52, /* 0x34 */
+    "Core.Struct:Children": 108, /* 0x6C */
+    "Core.Field:ArrayCount": 64, /* 0x40 */
+    "Core.Field:Size": 68, /* 0x44 */
+    "Core.Field:Offset": 96, /* 0x60 */
+    "Core.Field:Next": 100, /* 0x64 */
+    "Core.ArrayProperty:Inner": 128, /* 0x80 */
+    "Core.BoolProperty:BitFlag": 128, /* 0x80 */
+    "Core.ObjectProperty:PropertyClass": 128, /* 0x80 */
+    "Core.StructProperty:Struct": 128 /* 0x80 */
+  }
+}

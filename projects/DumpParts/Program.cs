@@ -143,7 +143,7 @@ namespace DumpParts
                 .Distinct()
                 .OrderBy(o => o.GetPath());
             using (var output = new StreamWriter(
-                Path.Combine("dumps", "Weapon Name Parts.json"), 
+                Path.Combine("dumps", "Weapon Name Parts.json"),
                 false,
                 Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
@@ -183,11 +183,15 @@ namespace DumpParts
                         IEnumerable<dynamic> externalAttributeEffects = weaponNamePart.ExternalAttributeEffects;
                         foreach (var externalAttributeEffect in externalAttributeEffects)
                         {
-                            if (externalAttributeEffect.AttributeToModify != null &&
-                                externalAttributeEffect.AttributeToModify.GetPath() !=
-                                "GD_Shields.Attributes.Attr_LawEquipped")
+                            if (externalAttributeEffect.AttributeToModify != null)
                             {
-                                throw new InvalidOperationException();
+                                var attributeToModifyPath = externalAttributeEffect.AttributeToModify.GetPath();
+                                if (attributeToModifyPath != "GD_Shields.Attributes.Attr_LawEquipped" &&
+                                    attributeToModifyPath != "GD_Anemone_Shields.Attributes.Attr_PeakEquipped" &&
+                                    attributeToModifyPath != "GD_Anemone_Shields.Attributes.Attr_ToothEquipped")
+                                {
+                                    throw new InvalidOperationException();
+                                }
                             }
                         }
                     }
@@ -350,7 +354,7 @@ namespace DumpParts
                 .Distinct()
                 .OrderBy(o => o.GetPath());
             using (var output = new StreamWriter(
-                Path.Combine("dumps", "Item Parts.json"), 
+                Path.Combine("dumps", "Item Parts.json"),
                 false,
                 Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
@@ -420,8 +424,8 @@ namespace DumpParts
                 .Distinct()
                 .OrderBy(o => o.GetPath());
             using (var output = new StreamWriter(
-                Path.Combine("dumps", "Item Name Parts.json"), 
-                false, 
+                Path.Combine("dumps", "Item Name Parts.json"),
+                false,
                 Encoding.UTF8))
             using (var writer = new JsonTextWriter(output))
             {

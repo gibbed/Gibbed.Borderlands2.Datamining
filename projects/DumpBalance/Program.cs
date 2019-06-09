@@ -289,7 +289,14 @@ namespace DumpBalance
             writer.WriteStartArray();
             foreach (var weightedPart in weightedParts)
             {
-                writer.WriteValue(weightedPart.Part.GetPath());
+                if (weightedPart.Part == null)
+                {
+                    writer.WriteNull();
+                }
+                else
+                {
+                    writer.WriteValue(weightedPart.Part.GetPath());
+                }
             }
             writer.WriteEndArray();
         }
