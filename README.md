@@ -6,8 +6,16 @@ They function by dumping information from a running instance of Borderlands 2.
 
 ## Usage
 
-All tools, unless otherwise specified, should be run while Borderlands 2 is in the main menu.
+All tools should be run while Borderlands 2 is currently in the specified state.
 
-#### DumpBalance, DumpItems
-
-Should be run while Borderlands 2 is in-game.
+- `DumpAssetLibraryManager`: main menu
+- `DumpBalance`: in-game
+- `DumpCurrencies`: any
+- `DumpCustomizations`: any
+- `DumpDeveloperPerks`: any
+- `DumpDownloadableContentManager`: any
+- `DumpItems`: in-game
+- `DumpMissions`: any
+- `DumpParts`: any
+- `DumpPlayerClasses`: any
+- `DumpTravelStations`: any
