@@ -106,9 +106,15 @@ namespace DumpAssetLibraryManager
                     int libraryIndex = 0;
                     foreach (dynamic library in assetLibrarySet.Libraries)
                     {
-                        string desc = assLibMan.LibraryConfigs[libraryIndex].Desc;
+                        if (library == null)
+                        {
+                            libraryIndex++;
+                            continue;
+                        }
 
+                        string desc = assLibMan.LibraryConfigs[libraryIndex].Desc;
                         writer.WritePropertyName(desc.Replace(" ", ""));
+
                         writer.WriteStartObject();
 
                         if (library.LibraryType != null)
@@ -120,65 +126,72 @@ namespace DumpAssetLibraryManager
                         writer.WritePropertyName("sublibraries");
                         writer.WriteStartArray();
 
+                        /*
                         if (library.Sublibraries.Length != library.SublibraryLinks.Length)
                         {
                             throw new InvalidOperationException();
                         }
+                        */
 
-                        int sublibraryIndex = 0;
-                        foreach (dynamic sublibrary in library.SublibraryLinks)
+                        var sublibraryCount = (int)library.Sublibraries.Length;
+                        for (int sublibraryIndex = 0; sublibraryIndex < sublibraryCount; sublibraryIndex++)
                         {
+                            var sublibraryPath = (string)library.Sublibraries[sublibraryIndex];
+                            dynamic sublibrary = sublibraryIndex < library.SublibraryLinks.Length
+                                ? library.SublibraryLinks[sublibraryIndex]
+                                : engine.GetObject(sublibraryPath);
+
                             writer.WriteStartObject();
 
-                            var description = (string)library.Sublibraries[sublibraryIndex];
-
                             writer.WritePropertyName("description");
-                            writer.WriteValue(description);
+                            writer.WriteValue(sublibraryPath);
 
                             if (sublibrary != null)
                             {
-                                writer.WritePropertyName("package");
-                                writer.WriteValue(sublibrary.CachedPackageName);
-                            }
-
-                            writer.WritePropertyName("assets");
-                            writer.WriteStartArray();
-
-                            if (sublibrary != null &&
-                                _Blacklist.Contains(description) == false)
-                            {
-                                var assets = sublibrary.Assets;
-                                if (assets.Length != 0)
+                                var cachedPackageName = (string)sublibrary.CachedPackageName;
+                                if (cachedPackageName != "None")
                                 {
-                                    throw new NotSupportedException();
+                                    writer.WritePropertyName("package");
+                                    writer.WriteValue(cachedPackageName);
                                 }
 
-                                var assetPaths = sublibrary.AssetPaths;
-                                foreach (var assetPath in assetPaths)
+                                if (_Blacklist.Contains(sublibraryPath) == false)
                                 {
-                                    var parts = new List<string>();
-                                    foreach (var pathComponentName in ((IEnumerable<string>)assetPath.PathComponentNames)
-                                        .Reverse())
-                                    {
-                                        if (pathComponentName == "None")
-                                        {
-                                            break;
-                                        }
+                                    writer.WritePropertyName("assets");
+                                    writer.WriteStartArray();
 
-                                        parts.Add(pathComponentName);
+                                    var assets = sublibrary.Assets;
+                                    if (assets.Length != 0)
+                                    {
+                                        throw new NotSupportedException();
                                     }
 
-                                    parts.Reverse();
-                                    var path = string.Join(".", parts.ToArray());
+                                    var assetPaths = sublibrary.AssetPaths;
+                                    foreach (var assetPath in assetPaths)
+                                    {
+                                        var parts = new List<string>();
+                                        foreach (var pathComponentName in ((IEnumerable<string>)assetPath.PathComponentNames)
+                                            .Reverse())
+                                        {
+                                            if (pathComponentName == "None")
+                                            {
+                                                break;
+                                            }
 
-                                    writer.WriteValue(path);
+                                            parts.Add(pathComponentName);
+                                        }
+
+                                        parts.Reverse();
+                                        var path = string.Join(".", parts.ToArray());
+
+                                        writer.WriteValue(path);
+                                    }
+
+                                    writer.WriteEndArray();
                                 }
                             }
 
-                            writer.WriteEndArray();
                             writer.WriteEndObject();
-
-                            sublibraryIndex++;
                         }
 
                         writer.WriteEndArray();
