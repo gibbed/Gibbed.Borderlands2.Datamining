@@ -1,3 +1,6 @@
 [submodule "projects/unreflect"]
 	path = projects/Unreflect
 	url = https://github.com/gibbed/Gibbed.Unreflect
+[submodule "bin/dumps"]
+	path = bin/dumps
+	url = https://github.com/gibbed/Borderlands2Dumps.git
