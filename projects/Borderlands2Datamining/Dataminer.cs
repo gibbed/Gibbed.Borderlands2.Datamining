@@ -21,15 +21,33 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Gibbed.Unreflect.Core;
 using Gibbed.Unreflect.Runtime;
+using Newtonsoft.Json;
 
 namespace Borderlands2Datamining
 {
     public class Dataminer
     {
+        public static JsonTextWriter NewDump(params string[] paths)
+        {
+            Directory.CreateDirectory("dumps");
+            var fullPaths = new List<string>();
+            fullPaths.Add("dumps");
+            fullPaths.AddRange(paths);
+            var writer = new StreamWriter(Path.Combine(fullPaths.ToArray()), false, Encoding.UTF8);
+            var jsonWriter = new JsonTextWriter(writer);
+            jsonWriter.Indentation = 2;
+            jsonWriter.IndentChar = ' ';
+            jsonWriter.Formatting = Formatting.Indented;
+            return jsonWriter;
+        }
+
         private Process FindSuitableProcess(out string config)
         {
             var processes = Process.GetProcessesByName("borderlands2");
