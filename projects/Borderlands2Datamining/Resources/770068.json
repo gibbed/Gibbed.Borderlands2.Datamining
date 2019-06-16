@@ -2,6 +2,7 @@
   "base_address": 4194304, /* 0x400000 */
   "global_name_array_address": 36029204, /* 0x225C314 */
   "global_object_array_address": 36306680, /* 0x229FEF8 */
+  "name_entry_index_offset": 8, /* 0x8 */
   "name_entry_string_offset": 16, /* 0x10 */
   "offsets": {
     "Core.Object:Outer": 40, /* 0x28 */
