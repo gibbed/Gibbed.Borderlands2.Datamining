@@ -21,6 +21,7 @@
  */
 
 using Gibbed.Unreflect.Core;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace PatchVaultHunterRelic
 {
@@ -28,7 +29,7 @@ namespace PatchVaultHunterRelic
     {
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)

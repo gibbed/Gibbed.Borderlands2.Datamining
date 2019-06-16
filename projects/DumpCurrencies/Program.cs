@@ -21,11 +21,9 @@
  */
 
 using System;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Gibbed.Unreflect.Core;
-using Newtonsoft.Json;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace DumpCurrencies
 {
@@ -33,7 +31,7 @@ namespace DumpCurrencies
     {
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)
@@ -48,18 +46,9 @@ namespace DumpCurrencies
                 .Where(o => o.IsA(currencyPresentationClass) &&
                             o.GetName().StartsWith("Default__") == false)
                 .OrderBy(o => o.GetPath());
-            Directory.CreateDirectory("dumps");
 
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Currencies.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Currencies.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
                 foreach (dynamic currencyPresentation in currencyPresentations)
                 {

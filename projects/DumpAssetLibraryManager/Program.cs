@@ -22,11 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Gibbed.Unreflect.Core;
-using Newtonsoft.Json;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace DumpAssetLibraryManager
 {
@@ -40,7 +38,7 @@ namespace DumpAssetLibraryManager
 
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)
@@ -51,8 +49,9 @@ namespace DumpAssetLibraryManager
                 throw new InvalidOperationException();
             }
 
-            dynamic globals = engine.Objects.FirstOrDefault(o => o.IsA(globalsClass) &&
-                                                                 o.GetName().StartsWith("Default__") == false);
+            dynamic globals = engine.Objects
+                .FirstOrDefault(o => o.IsA(globalsClass) &&
+                                o.GetName().StartsWith("Default__") == false);
             if (globals == null)
             {
                 throw new InvalidOperationException();
@@ -64,18 +63,8 @@ namespace DumpAssetLibraryManager
                 throw new InvalidOperationException();
             }
 
-            Directory.CreateDirectory("dumps");
-
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Asset Library Manager.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Asset Library Manager.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
 
                 writer.WritePropertyName("version");
@@ -103,9 +92,8 @@ namespace DumpAssetLibraryManager
 
                 writer.WritePropertyName("sets");
                 writer.WriteStartArray();
-                foreach (
-                    dynamic assetLibrarySet in
-                        ((IEnumerable<dynamic>)assLibMan.RuntimeAssetLibraries).OrderBy(ral => ral.Id))
+                foreach (dynamic assetLibrarySet in ((IEnumerable<dynamic>)assLibMan.RuntimeAssetLibraries)
+                    .OrderBy(ral => ral.Id))
                 {
                     writer.WriteStartObject();
 
@@ -169,9 +157,8 @@ namespace DumpAssetLibraryManager
                                 foreach (var assetPath in assetPaths)
                                 {
                                     var parts = new List<string>();
-                                    foreach (
-                                        var pathComponentName in
-                                            ((IEnumerable<string>)assetPath.PathComponentNames).Reverse())
+                                    foreach (var pathComponentName in ((IEnumerable<string>)assetPath.PathComponentNames)
+                                        .Reverse())
                                     {
                                         if (pathComponentName == "None")
                                         {

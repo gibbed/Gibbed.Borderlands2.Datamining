@@ -20,12 +20,11 @@
  *    distribution.
  */
 
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Gibbed.Unreflect.Core;
-using Newtonsoft.Json;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace DumpTravelStations
 {
@@ -33,7 +32,7 @@ namespace DumpTravelStations
     {
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)
@@ -48,21 +47,11 @@ namespace DumpTravelStations
                 levelTravelStationDefinitionClass == null ||
                 fastTravelStationsListOrderClass == null)
             {
-                throw new System.InvalidOperationException();
+                throw new InvalidOperationException();
             }
 
-            Directory.CreateDirectory("dumps");
-            
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Travel Stations.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Travel Stations.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
 
                 var travelStationDefinitions = engine.Objects
@@ -78,7 +67,7 @@ namespace DumpTravelStations
                     if (uclass.Path != "WillowGame.FastTravelStationDefinition" &&
                         uclass.Path != "WillowGame.LevelTravelStationDefinition")
                     {
-                        throw new System.InvalidOperationException();
+                        throw new InvalidOperationException();
                     }
 
                     writer.WritePropertyName(travelStationDefinition.GetPath());
@@ -228,16 +217,8 @@ namespace DumpTravelStations
                        (o.IsA(fastTravelStationsListOrderClass) == true) &&
                        o.GetName().StartsWith("Default__") == false)
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Fast Travel Station Ordering.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Fast Travel Station Ordering.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
 
                 foreach (dynamic fastTravelStationsListOrder in fastTravelStationsListOrders)

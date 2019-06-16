@@ -22,11 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Gibbed.Unreflect.Core;
-using Newtonsoft.Json;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace DumpDownloadableContentManager
 {
@@ -34,7 +32,7 @@ namespace DumpDownloadableContentManager
     {
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)
@@ -47,28 +45,15 @@ namespace DumpDownloadableContentManager
                 throw new InvalidOperationException();
             }
 
-            Directory.CreateDirectory("dumps");
-
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Downloadable Contents.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Downloadable Contents.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
 
                 var willowDownloadableContentManagers = engine.Objects
-                                                              .Where(
-                                                                  o => o.IsA(willowDownloadableContentManagerClass) &&
-                                                                       o.GetName().StartsWith("Default__") ==
-                                                                       false)
-                                                              .OrderBy(o => o.GetPath())
-                                                              .ToArray();
-
+                    .Where(o => o.IsA(willowDownloadableContentManagerClass) &&
+                                o.GetName().StartsWith("Default__") == false)
+                    .OrderBy(o => o.GetPath())
+                    .ToArray();
                 if (willowDownloadableContentManagers.Length != 1)
                 {
                     throw new InvalidOperationException();
@@ -93,10 +78,10 @@ namespace DumpDownloadableContentManager
                         throw new NotSupportedException();
                     }
 
-                    writer.WritePropertyName("id"); // content_id
+                    writer.WritePropertyName("id");
                     writer.WriteValue(content.ContentId);
 
-                    writer.WritePropertyName("name"); // content_display_name
+                    writer.WritePropertyName("name");
                     writer.WriteValue(content.ContentDisplayName);
 
                     if (content.PackageDef == null)
@@ -117,23 +102,14 @@ namespace DumpDownloadableContentManager
                 writer.Flush();
             }
 
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Downloadable Packages.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
+            using (var writer = Dataminer.NewDump("Downloadable Packages.json"))
             {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
-
                 writer.WriteStartObject();
 
                 var downloadablePackageDefinitions = engine.Objects
-                                                           .Where(o => o.IsA(downloadablePackageDefinitionClass) &&
-                                                                       o.GetName().StartsWith("Default__") ==
-                                                                       false)
-                                                           .OrderBy(o => o.GetPath());
+                    .Where(o => o.IsA(downloadablePackageDefinitionClass) &&
+                           o.GetName().StartsWith("Default__") == false)
+                    .OrderBy(o => o.GetPath());
                 foreach (dynamic downloadablePackageDefinition in downloadablePackageDefinitions)
                 {
                     writer.WritePropertyName(downloadablePackageDefinition.GetPath());

@@ -22,11 +22,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Gibbed.Unreflect.Core;
 using Newtonsoft.Json;
+using Dataminer = Borderlands2Datamining.Dataminer;
 
 namespace DumpParts
 {
@@ -34,7 +33,7 @@ namespace DumpParts
     {
         private static void Main(string[] args)
         {
-            new Borderlands2Datamining.Dataminer().Run(args, Go);
+            new Dataminer().Run(args, Go);
         }
 
         private static void Go(Engine engine)
@@ -70,22 +69,14 @@ namespace DumpParts
                 throw new InvalidOperationException();
             }
 
-            Directory.CreateDirectory("dumps");
-
             var weaponParts = engine.Objects
-                .Where(o => o.IsA(weaponPartDefinitionClass) == true && o.GetName().StartsWith("Default__") == false)
+                .Where(o => o.IsA(weaponPartDefinitionClass) == true &&
+                            o.GetName().StartsWith("Default__") == false)
                 .Distinct()
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Weapon Parts.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
-            {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
 
+            using (var writer = Dataminer.NewDump("Weapon Parts.json"))
+            {
                 writer.WriteStartObject();
 
                 foreach (dynamic weaponPart in weaponParts)
@@ -139,19 +130,13 @@ namespace DumpParts
             }
 
             var weaponNameParts = engine.Objects
-                .Where(o => o.IsA(weaponNamePartDefinitionClass) == true && o.GetName().StartsWith("Default__") == false)
+                .Where(o => o.IsA(weaponNamePartDefinitionClass) == true &&
+                       o.GetName().StartsWith("Default__") == false)
                 .Distinct()
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Weapon Name Parts.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
-            {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
 
+            using (var writer = Dataminer.NewDump("Weapon Name Parts.json"))
+            {
                 writer.WriteStartObject();
 
                 foreach (dynamic weaponNamePart in weaponNameParts)
@@ -353,16 +338,9 @@ namespace DumpParts
                             o.GetName().StartsWith("Default__") == false)
                 .Distinct()
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Item Parts.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
-            {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
 
+            using (var writer = Dataminer.NewDump("Item Parts.json"))
+            {
                 writer.WriteStartObject();
 
                 foreach (dynamic itemPart in itemParts)
@@ -420,19 +398,13 @@ namespace DumpParts
             }
 
             var itemNameParts = engine.Objects
-                .Where(o => o.IsA(itemNamePartDefinitionClass) == true && o.GetName().StartsWith("Default__") == false)
+                .Where(o => o.IsA(itemNamePartDefinitionClass) == true &&
+                       o.GetName().StartsWith("Default__") == false)
                 .Distinct()
                 .OrderBy(o => o.GetPath());
-            using (var output = new StreamWriter(
-                Path.Combine("dumps", "Item Name Parts.json"),
-                false,
-                Encoding.UTF8))
-            using (var writer = new JsonTextWriter(output))
-            {
-                writer.Indentation = 2;
-                writer.IndentChar = ' ';
-                writer.Formatting = Formatting.Indented;
 
+            using (var writer = Dataminer.NewDump("Item Name Parts.json"))
+            {
                 writer.WriteStartObject();
 
                 foreach (dynamic itemNamePart in itemNameParts)
