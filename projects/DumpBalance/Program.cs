@@ -85,7 +85,7 @@ namespace DumpBalance
                     var baseTypePath = (string)balanceDefinition.BaseDefinition?.InventoryDefinition?.GetPath();
                     if (typePath != null && (baseTypePath == null || typePath != baseTypePath))
                     {
-                        writer.WritePropertyName("type");
+                        writer.WritePropertyName("weapon_type");
                         writer.WriteValue(typePath);
                     }
 
@@ -145,7 +145,7 @@ namespace DumpBalance
                         if (associatedWeaponTypePath != null &&
                             (baseAssociatedWeaponTypePath == null || associatedWeaponTypePath != baseAssociatedWeaponTypePath))
                         {
-                            writer.WritePropertyName("type");
+                            writer.WritePropertyName("weapon_type");
                             writer.WriteValue(associatedWeaponTypePath);
                         }
 
@@ -201,12 +201,12 @@ namespace DumpBalance
                         writer.WriteValue(baseDefinition.GetPath());
                     }
 
-                    var typePath = (string)balanceDefinition.InventoryDefinition?.GetPath();
-                    var baseTypePath = (string)balanceDefinition.BaseDefinition?.InventoryDefinition?.GetPath();
-                    if (typePath != null && (baseTypePath == null || typePath != baseTypePath))
+                    var itemPath = (string)balanceDefinition.InventoryDefinition?.GetPath();
+                    var baseItemPath = (string)balanceDefinition.BaseDefinition?.InventoryDefinition?.GetPath();
+                    if (itemPath != null && (baseItemPath == null || itemPath != baseItemPath))
                     {
-                        writer.WritePropertyName("type");
-                        writer.WriteValue(typePath);
+                        writer.WritePropertyName("item");
+                        writer.WriteValue(itemPath);
                     }
 
                     if (uclass == classModBalanceDefinitionClass &&
@@ -214,7 +214,7 @@ namespace DumpBalance
                     {
                         dynamic[] classModDefinitions = balanceDefinition.ClassModDefinitions;
 
-                        writer.WritePropertyName("types");
+                        writer.WritePropertyName("items");
                         writer.WriteStartArray();
                         foreach (var classModDefinition in classModDefinitions.OrderBy(cmd => cmd.GetPath()))
                         {
@@ -277,7 +277,7 @@ namespace DumpBalance
                         if (associatedItemPath != null &&
                             (baseAssociatedItemPath == null || associatedItemPath != baseAssociatedItemPath))
                         {
-                            writer.WritePropertyName("type");
+                            writer.WritePropertyName("item");
                             writer.WriteValue(associatedItemPath);
                         }
 
