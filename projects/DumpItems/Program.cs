@@ -209,9 +209,6 @@ namespace DumpItems
 
                 foreach (var itemType in itemTypes.Distinct().OrderBy(wp => wp.GetPath()))
                 {
-                    writer.WritePropertyName(itemType.GetPath());
-                    writer.WriteStartObject();
-
                     UnrealClass itemPartClass = itemType.GetClass();
                     if (itemPartClass.Path == "WillowGame.WeaponTypeDefinition")
                     {
@@ -229,6 +226,9 @@ namespace DumpItems
                     {
                         throw new InvalidOperationException();
                     }
+
+                    writer.WritePropertyName(itemType.GetPath());
+                    writer.WriteStartObject();
 
                     var itemName = (string)itemType.ItemName;
                     if (string.IsNullOrEmpty(itemName) == false &&
