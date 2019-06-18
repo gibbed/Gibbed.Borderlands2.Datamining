@@ -55,32 +55,37 @@ namespace DumpItems
             var weaponTypes = new List<dynamic>();
             {
                 var balanceDefinitions = engine.Objects
-                    .Where(o => o.IsA(weaponBalanceDefinitionClass) &&
+                    .Where(o => (o.IsA(inventoryBalanceDefinitionClass) ||
+                                 o.IsA(weaponBalanceDefinitionClass)) &&
                                 o.GetName().StartsWith("Default__") == false)
                     .OrderBy(o => o.GetPath());
                 foreach (dynamic balanceDefinition in balanceDefinitions)
                 {
-                    if (balanceDefinition.PartListCollection != null)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    if (balanceDefinition.InventoryDefinition != null)
+                    if (balanceDefinition.InventoryDefinition != null &&
+                        balanceDefinition.InventoryDefinition.GetClass().Path == "WillowGame.WeaponTypeDefinition")
                     {
                         weaponTypes.Add(balanceDefinition.InventoryDefinition);
                     }
 
-                    var partListCollection = balanceDefinition.WeaponPartListCollection;
-                    if (partListCollection == null)
+                    if (balanceDefinition.GetClass() == weaponBalanceDefinitionClass)
                     {
-                        throw new InvalidOperationException();
-                    }
-
-                    if (partListCollection != null)
-                    {
-                        if (partListCollection.AssociatedWeaponType != null)
+                        if (balanceDefinition.PartListCollection != null)
                         {
-                            weaponTypes.Add(partListCollection.AssociatedWeaponType);
+                            throw new NotSupportedException();
+                        }
+
+                        var partListCollection = balanceDefinition.WeaponPartListCollection;
+                        if (partListCollection == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        if (partListCollection != null)
+                        {
+                            if (partListCollection.AssociatedWeaponType != null)
+                            {
+                                weaponTypes.Add(partListCollection.AssociatedWeaponType);
+                            }
                         }
                     }
                 }
@@ -180,7 +185,8 @@ namespace DumpItems
                         itemTypes.AddRange(classModDefinitions.Where(cmd => cmd != null));
                     }
 
-                    if (balanceDefinition.InventoryDefinition != null)
+                    if (balanceDefinition.InventoryDefinition != null &&
+                        balanceDefinition.InventoryDefinition.GetClass().Path != "WillowGame.WeaponTypeDefinition")
                     {
                         itemTypes.Add(balanceDefinition.InventoryDefinition);
                     }
@@ -210,10 +216,6 @@ namespace DumpItems
                 foreach (var itemType in itemTypes.Distinct().OrderBy(wp => wp.GetPath()))
                 {
                     UnrealClass itemPartClass = itemType.GetClass();
-                    if (itemPartClass.Path == "WillowGame.WeaponTypeDefinition")
-                    {
-                        continue;
-                    }
 
                     if (itemPartClass.Path != "WillowGame.UsableItemDefinition" &&
                         itemPartClass.Path != "WillowGame.ArtifactDefinition" &&
