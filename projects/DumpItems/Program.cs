@@ -163,7 +163,7 @@ namespace DumpItems
                 writer.WriteStartObject();
                 foreach (var partList in weaponPartLists.Distinct().OrderBy(wp => wp.GetPath()))
                 {
-                    DumpCustomPartTypeData(writer, partList.GetPath(), partList);
+                    WritePartList(writer, partList.GetPath(), partList);
                 }
                 writer.WriteEndObject();
             }
@@ -316,7 +316,7 @@ namespace DumpItems
                 writer.WriteStartObject();
                 foreach (var partList in itemPartLists.Distinct().OrderBy(wp => wp.GetPath()))
                 {
-                    DumpCustomPartTypeData(writer, partList.GetPath(), partList);
+                    WritePartList(writer, partList.GetPath(), partList);
                 }
                 writer.WriteEndObject();
             }
@@ -332,14 +332,14 @@ namespace DumpItems
             }
         }
 
-        private static void DumpCustomPartTypeData(JsonWriter writer, string name, dynamic customPartTypeData)
+        private static void WritePartList(JsonWriter writer, string name, dynamic data)
         {
-            if (customPartTypeData == null)
+            if (data == null)
             {
                 return;
             }
 
-            var weightedParts = ((IEnumerable<dynamic>)customPartTypeData.WeightedParts).ToArray();
+            var weightedParts = ((IEnumerable<dynamic>)data.WeightedParts).ToArray();
             if (weightedParts.Length == 0)
             {
                 return;
