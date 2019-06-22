@@ -144,15 +144,15 @@ namespace DumpBalance
                     var basePartList = baseBalance == null ? null : baseBalance.RuntimePartListCollection;
 
                     PartReplacementMode? mode = null;
-                    var bodyPartData = BuildCustomPartTypeData(partList.BodyPartData, basePartList?.BodyPartData, ref mode);
-                    var gripPartData = BuildCustomPartTypeData(partList.GripPartData, basePartList?.GripPartData, ref mode);
-                    var barrelPartData = BuildCustomPartTypeData(partList.BarrelPartData, basePartList?.BarrelPartData, ref mode);
-                    var sightPartData = BuildCustomPartTypeData(partList.SightPartData, basePartList?.SightPartData, ref mode);
-                    var stockPartData = BuildCustomPartTypeData(partList.StockPartData, basePartList?.StockPartData, ref mode);
-                    var elementalPartData = BuildCustomPartTypeData(partList.ElementalPartData, basePartList?.ElementalPartData, ref mode);
-                    var accessory1PartData = BuildCustomPartTypeData(partList.Accessory1PartData, basePartList?.Accessory1PartData, ref mode);
-                    var accessory2PartData = BuildCustomPartTypeData(partList.Accessory2PartData, basePartList?.Accessory2PartData, ref mode);
-                    var materialPartData = BuildCustomPartTypeData(partList.MaterialPartData, basePartList?.MaterialPartData, ref mode);
+                    var bodyPartData = BuildPartList(partList.BodyPartData, basePartList?.BodyPartData, ref mode);
+                    var gripPartData = BuildPartList(partList.GripPartData, basePartList?.GripPartData, ref mode);
+                    var barrelPartData = BuildPartList(partList.BarrelPartData, basePartList?.BarrelPartData, ref mode);
+                    var sightPartData = BuildPartList(partList.SightPartData, basePartList?.SightPartData, ref mode);
+                    var stockPartData = BuildPartList(partList.StockPartData, basePartList?.StockPartData, ref mode);
+                    var elementalPartData = BuildPartList(partList.ElementalPartData, basePartList?.ElementalPartData, ref mode);
+                    var accessory1PartData = BuildPartList(partList.Accessory1PartData, basePartList?.Accessory1PartData, ref mode);
+                    var accessory2PartData = BuildPartList(partList.Accessory2PartData, basePartList?.Accessory2PartData, ref mode);
+                    var materialPartData = BuildPartList(partList.MaterialPartData, basePartList?.MaterialPartData, ref mode);
 
                     if (mode == null)
                     {
@@ -310,6 +310,7 @@ namespace DumpBalance
                     var balanceClass = balance.GetClass();
                     var baseBalance = balance.BaseDefinition;
 
+                    PartReplacementMode? mode;
                     dynamic partList;
                     if (balanceClass == inventoryBalanceClass)
                     {
@@ -318,6 +319,7 @@ namespace DumpBalance
                         {
                             throw new InvalidOperationException();
                         }
+                        mode = (PartReplacementMode)partList.PartReplacementMode;
                     }
                     else
                     {
@@ -336,6 +338,7 @@ namespace DumpBalance
                         {
                             throw new InvalidOperationException();
                         }
+                        mode = (PartReplacementMode)partList.PartReplacementMode;
                     }
 
                     if (partList.GetClass().Path != "WillowGame.ItemPartListCollectionDefinition")
@@ -347,16 +350,34 @@ namespace DumpBalance
                                        baseBalance.GetClass() == inventoryBalanceClass
                         ? null : baseBalance.RuntimePartListCollection;
 
-                    PartReplacementMode? mode = null;
-                    var alphaPartData = BuildCustomPartTypeData(partList.AlphaPartData, basePartList?.AlphaPartData, ref mode);
-                    var betaPartData = BuildCustomPartTypeData(partList.BetaPartData, basePartList?.BetaPartData, ref mode);
-                    var gammaPartData = BuildCustomPartTypeData(partList.GammaPartData, basePartList?.GammaPartData, ref mode);
-                    var deltaPartData = BuildCustomPartTypeData(partList.DeltaPartData, basePartList?.DeltaPartData, ref mode);
-                    var epsilonPartData = BuildCustomPartTypeData(partList.EpsilonPartData, basePartList?.EpsilonPartData, ref mode);
-                    var zetaPartData = BuildCustomPartTypeData(partList.ZetaPartData, basePartList?.ZetaPartData, ref mode);
-                    var etaPartData = BuildCustomPartTypeData(partList.EtaPartData, basePartList?.EtaPartData, ref mode);
-                    var thetaPartData = BuildCustomPartTypeData(partList.ThetaPartData, basePartList?.ThetaPartData, ref mode);
-                    var materialPartData = BuildCustomPartTypeData(partList.MaterialPartData, basePartList?.MaterialPartData, ref mode);
+                    List<string>
+                        alphaPartData, betaPartData, gammaPartData, deltaPartData, epsilonPartData,
+                        zetaPartData, etaPartData, thetaPartData, materialPartData;
+                    if (basePartList == null)
+                    {
+                        var associatedItem = partList.AssociatedItem;
+                        alphaPartData = BuildPartList(partList.AlphaPartData, associatedItem?.AlphaParts, ref mode);
+                        betaPartData = BuildPartList(partList.BetaPartData, associatedItem?.BetaParts, ref mode);
+                        gammaPartData = BuildPartList(partList.GammaPartData, associatedItem?.GammaParts, ref mode);
+                        deltaPartData = BuildPartList(partList.DeltaPartData, associatedItem?.DeltaParts, ref mode);
+                        epsilonPartData = BuildPartList(partList.EpsilonPartData, associatedItem?.EpsilonParts, ref mode);
+                        zetaPartData = BuildPartList(partList.ZetaPartData, associatedItem?.ZetaParts, ref mode);
+                        etaPartData = BuildPartList(partList.EtaPartData, associatedItem?.EtaParts, ref mode);
+                        thetaPartData = BuildPartList(partList.ThetaPartData, associatedItem?.ThetaParts, ref mode);
+                        materialPartData = BuildPartList(partList.MaterialPartData, associatedItem?.MaterialParts, ref mode);
+                    }
+                    else
+                    {
+                        alphaPartData = BuildPartList(partList.AlphaPartData, basePartList?.AlphaPartData, ref mode);
+                        betaPartData = BuildPartList(partList.BetaPartData, basePartList?.BetaPartData, ref mode);
+                        gammaPartData = BuildPartList(partList.GammaPartData, basePartList?.GammaPartData, ref mode);
+                        deltaPartData = BuildPartList(partList.DeltaPartData, basePartList?.DeltaPartData, ref mode);
+                        epsilonPartData = BuildPartList(partList.EpsilonPartData, basePartList?.EpsilonPartData, ref mode);
+                        zetaPartData = BuildPartList(partList.ZetaPartData, basePartList?.ZetaPartData, ref mode);
+                        etaPartData = BuildPartList(partList.EtaPartData, basePartList?.EtaPartData, ref mode);
+                        thetaPartData = BuildPartList(partList.ThetaPartData, basePartList?.ThetaPartData, ref mode);
+                        materialPartData = BuildPartList(partList.MaterialPartData, basePartList?.MaterialPartData, ref mode);
+                    }
 
                     if (mode == null)
                     {
@@ -394,7 +415,7 @@ namespace DumpBalance
             }
         }
 
-        private static List<string> BuildCustomPartTypeData(dynamic data, dynamic baseData, ref PartReplacementMode? mode)
+        private static List<string> BuildPartList(dynamic data, dynamic baseData, ref PartReplacementMode? mode)
         {
             if ((bool)data.bEnabled == false)
             {
@@ -424,7 +445,10 @@ namespace DumpBalance
                 return partPaths;
             }
 
-            if ((bool)baseData.bEnabled == false)
+            var baseDataPath = (string)baseData.GetClass().Path;
+            if ((baseDataPath == "WillowGame.ItemPartListCollectionDefinition.ItemCustomPartTypeData" ||
+                 baseDataPath == "WillowGame.WeaponPartListCollectionDefinition.WeaponCustomPartTypeData") &&
+                (bool)baseData.bEnabled == false)
             {
                 if (mode == null)
                 {
@@ -447,10 +471,18 @@ namespace DumpBalance
                 }
             }
 
-            if (mode == PartReplacementMode.Selective || basePartPaths.Except(partPaths).Any() == true)
+            if (mode == PartReplacementMode.Selective ||
+                mode == PartReplacementMode.Complete ||
+                basePartPaths.Except(partPaths).Any() == true)
             {
-                mode = PartReplacementMode.Selective;
-                return StringComparer.Equals(partPaths, basePartPaths) == true ? null : partPaths;
+                if (mode != PartReplacementMode.Selective &&
+                    mode != PartReplacementMode.Complete)
+                {
+                    mode = PartReplacementMode.Selective;
+                }
+                return StringComparer.Equals(partPaths, basePartPaths) == true
+                    ? null
+                    : partPaths;
             }
 
             if (mode != null && mode != PartReplacementMode.Additive)
