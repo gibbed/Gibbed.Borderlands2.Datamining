@@ -480,7 +480,8 @@ namespace DumpBalance
                 {
                     mode = PartReplacementMode.Selective;
                 }
-                return StringComparer.Equals(partPaths, basePartPaths) == true
+                return mode == PartReplacementMode.Selective &&
+                       StringComparer.Equals(partPaths, basePartPaths) == true
                     ? null
                     : partPaths;
             }
