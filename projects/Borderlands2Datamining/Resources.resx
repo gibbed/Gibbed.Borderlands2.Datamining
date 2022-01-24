@@ -118,15 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="1055911" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\1055911.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="1838877" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\1838877.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="1890495" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\1890495.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="660065" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\660065.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -180,5 +171,26 @@
   </data>
   <data name="827556" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\827556.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="1055911" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\1055911.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="1838877" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\1838877.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="1890495" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\1890495.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="2132147" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2132147.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="2140712" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2140712.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="2209847" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2209847.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="2464059" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\2464059.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
