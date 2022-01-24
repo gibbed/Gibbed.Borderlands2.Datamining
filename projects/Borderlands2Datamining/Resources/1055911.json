@@ -1,3 +1,4 @@
+/* version 1.8.4 */
 {
   "base_address": 4194304, /* 0x400000 */
   "global_name_array_address": 36205508, /* 0x22873C4 */
